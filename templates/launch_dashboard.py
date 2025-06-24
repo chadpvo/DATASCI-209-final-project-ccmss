@@ -1,3 +1,15 @@
+import requests
+import requests
+
+def send_data_to_dashboard(merged_data):
+    payload = merged_data.to_dict(orient='records')
+    url = "https://drone-dashboard-w3j56.ondigitalocean.app/api/upload"
+    try:
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+    except Exception:
+        pass
+
 def launch_dashboard():
     """Launch the complete multi-sensor fusion dashboard"""
     
@@ -72,6 +84,7 @@ def launch_dashboard():
     print(f"="*55)
     
     # Launch Flask app
+    '''
     try:
         app.run(host='localhost', port=5000, debug=False, use_reloader=False)
     except KeyboardInterrupt:
@@ -82,3 +95,7 @@ def launch_dashboard():
         print(f"   • Check if port 5000 is already in use")
         print(f"   • Restart your Jupyter kernel")
         print(f"   • Run the cells again from the beginning")
+        '''
+
+ 
+
