@@ -117,3 +117,6 @@ import pandas as pd
 
 merged_data = pd.read_csv("data/merged_data.csv", parse_dates=['datetime(utc)'])
 app = create_flask_app(merged_data)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=False)

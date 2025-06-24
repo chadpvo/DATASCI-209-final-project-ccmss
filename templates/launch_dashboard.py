@@ -1,8 +1,10 @@
 import requests
+from multi_processor import MultiSensorDataProcessor, DATA_DIR
+from flask_app import create_flask_app
 
 def send_data_to_dashboard(merged_data):
     payload = merged_data.to_dict(orient='records')
-    url = "https://drone-dashboard-w3j56.ondigitalocean.app/api/upload"
+    url = "https://drone-dashboard-yyrbx.ondigitalocean.app/"
     try:
         response = requests.post(url, json=payload)
         response.raise_for_status()
@@ -95,6 +97,3 @@ def launch_dashboard():
         print(f"   • Restart your Jupyter kernel")
         print(f"   • Run the cells again from the beginning")
         '''
-
- 
-
