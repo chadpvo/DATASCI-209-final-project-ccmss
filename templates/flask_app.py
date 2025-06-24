@@ -112,3 +112,8 @@ def create_flask_app(merged_data):
         })
     
     return app
+
+import pandas as pd
+
+merged_data = pd.read_csv("data/merged_data.csv", parse_dates=['datetime(utc)'])
+app = create_flask_app(merged_data)
