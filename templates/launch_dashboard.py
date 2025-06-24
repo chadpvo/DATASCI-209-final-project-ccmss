@@ -1,5 +1,4 @@
 import requests
-import requests
 
 def send_data_to_dashboard(merged_data):
     payload = merged_data.to_dict(orient='records')
