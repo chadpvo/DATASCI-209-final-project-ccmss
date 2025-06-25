@@ -1,15 +1,19 @@
-from multi_processor import MultiSensorDataProcessor
+import sys
 import os
 import pandas as pd
+from multi_processor import MultiSensorDataProcessor
 
-data_dir = os.path.abspath("drone_data")
-processor = MultiSensorDataProcessor(data_dir)
-if processor.load_all_data():
+try:
+    data_dir = os.path.abspath("drone_data")
+    processor = MultiSensorDataProcessor(data_dir)
+    if not processor.load_all_data():
+        raise RuntimeError("Loading sensor data failed.")
     merged_data = processor.merge_sensor_data()
     if merged_data is None:
         raise RuntimeError("Merging sensor data failed.")
-else:
-    raise RuntimeError("Loading sensor data failed.")
+except Exception as e:
+    print(f"Startup error: {e}", file=sys.stderr)
+    sys.exit(1)  # Exit with failure code
 
 
 def create_flask_app(merged_data):
