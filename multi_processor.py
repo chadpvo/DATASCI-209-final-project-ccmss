@@ -23,11 +23,11 @@ class MultiSensorDataProcessor:
 
         # Define expected files
         files_to_load = {
-            'ground_truth': "drone_data/2020-09-29_14-10-56_v2.csv",
-            'ALVIRA': 'drone_data/ALVIRA_scenario.csv',
-            'ARCUS': 'drone_data/ARCUS_scenario.csv',
-            'DIANA': 'drone_data/DIANA_scenario.csv',
-            'VENUS': 'drone_data/VENUS_scenario.csv'
+            'ground_truth': "2020-09-29_14-10-56_v2.csv",
+            'ALVIRA': 'ALVIRA_scenario.csv',
+            'ARCUS': 'ARCUS_scenario.csv',
+            'DIANA': 'DIANA_scenario.csv',
+            'VENUS': 'VENUS_scenario.csv'
         }
 
         # Load ground truth (drone log)
@@ -256,5 +256,3 @@ class MultiSensorDataProcessor:
                 print(f"\nVENUS (RF Direction Finding):")
                 print(f"   Detection Rate:      {len(venus_valid)/total_records*100:.1f}% ({len(venus_valid):,} detections)")
                 print(f"   Avg Frequency:      {venus_valid['venus_frequency'].mean()/1e6:.0f} MHz")
-
-        print("="*60)
