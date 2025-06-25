@@ -4,7 +4,7 @@ import pandas as pd
 from multi_processor import MultiSensorDataProcessor
 
 try:
-    data_dir = os.path.abspath("drone_data")
+    data_dir = os.path.abspath("data/src/icmcis-drone-detection/train/train/Scenario_1_1")
     processor = MultiSensorDataProcessor(data_dir)
     if not processor.load_all_data():
         raise RuntimeError("Loading sensor data failed.")
@@ -135,7 +135,7 @@ def create_flask_app(merged_data):
 
 import pandas as pd
 
-merged_data = pd.read_csv("data/merged_data.csv", parse_dates=['datetime(utc)'])
+merged_data = pd.read_csv("data/processed/merged_data.csv", parse_dates=['datetime(utc)'])
 app = create_flask_app(merged_data)
 
 if __name__ == '__main__':

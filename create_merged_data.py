@@ -2,8 +2,8 @@ import os
 from multi_processor import MultiSensorDataProcessor
 
 def main():
-    data_dir = os.path.abspath("drone_data")  # folder where raw CSV files are
-    output_dir = os.path.abspath("data")      # output folder for merged data
+    data_dir = os.path.abspath("data/src/icmcis-drone-detection/train/train/Scenario_1_1")  # folder where raw CSV files are
+    output_dir = os.path.abspath("data/processed")      # output folder for merged data
     os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.join(output_dir, "merged_data.csv")
 
