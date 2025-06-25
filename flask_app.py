@@ -1,8 +1,24 @@
+from multi_processor import MultiSensorDataProcessor
+import os
+import pandas as pd
+
+data_dir = os.path.abspath("drone_data")
+processor = MultiSensorDataProcessor(data_dir)
+if processor.load_all_data():
+    merged_data = processor.merge_sensor_data()
+    if merged_data is None:
+        raise RuntimeError("Merging sensor data failed.")
+else:
+    raise RuntimeError("Loading sensor data failed.")
+
+
 def create_flask_app(merged_data):
     """Create Flask app with the processed data"""
     
     from flask import Flask, render_template, jsonify
     import json
+
+    
     
     app = Flask(__name__)
     
