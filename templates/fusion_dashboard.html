@@ -505,7 +505,7 @@
                 //}, [0, 1, 2, 3]);
                 
                 // Update sensor status
-                updateSensorStatus(currentPoint);
+                //updateSensorStatus(currentPoint);
                 //}
             
             Plotly.restyle('flightPathMap', {
@@ -522,7 +522,7 @@
                     [currentPoint.gt_latitude]
                 ]
             }, [0, 1, 2, 3]);
-
+            updateSensorStatus(currentPoint);}
             function updateSensorStatus(currentPoint) {
                 // ALVIRA status
                 const alviraStatus = document.getElementById('alviraStatus');
