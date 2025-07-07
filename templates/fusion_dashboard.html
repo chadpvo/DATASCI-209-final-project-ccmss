@@ -247,9 +247,31 @@
 </head>
 <body>
     <div class="page-container">
-        <div class="header">
+        <div class="header" style="position: relative;">            
+            <div class="instructions" style="background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 20px; margin: 0 auto 30px auto; max-width: min(95vw, 1600px); box-shadow: 0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(10px);">
+                <h2 style="margin-top: 0; color: #2c3e50;">📘 How to Use This Dashboard</h2>
+                <ul style="line-height: 1.6; font-size: 1em; padding-left: 20px; color: #333;">
+                    <li><strong>Use the Timeline Slider</strong> to move through the mission in time. You can also use your keyboard:
+                        <ul style="margin-top: 5px; padding-left: 20px; list-style-type: circle;">
+                            <li><kbd>←</kbd> / <kbd>→</kbd> to move one frame at a time</li>
+                            <li><kbd>Home</kbd> to jump to the beginning</li>
+                            <li><kbd>End</kbd> to jump to the end</li>
+                        </ul>
+                    </li>
+                    <li>The <strong>Altitude Chart</strong> compares estimated altitudes from ALVIRA and ARCUS with ground-truth data.</li>
+                    <li>The <strong>Error Chart</strong> tracks the position error over time for both radar systems.</li>
+                    <li>The <strong>Flight Path Map</strong> visualizes GPS tracks and current drone position.</li>
+                    <li><strong>Sensor Cards</strong> show real-time detection status for each sensor modality (2D Radar, 3D Radar, RF-DF).</li>
+                    <li><strong>Performance Metrics</strong> (at the bottom) provide insight into detection rates and error margins.</li>
+                </ul>
+                <p style="margin-top: 20px; font-size: 0.95em; color: #666;"><em>Note: Data updates in real time as you scrub the timeline. Hover over charts for precise values.</em></p>
+            </div>
+            
             <h1>🛡️ Multi-Sensor Drone Tracking Dashboard</h1>
             <p>Real-time fusion analysis: Ground Truth vs Multi-Sensor Detection Systems</p>
+            <button onclick="openModal()" style="position: absolute; top: 10px; right: 10px; padding: 10px 15px; border: none; background: #ffffffdd; color: #2c3e50; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                ❓ Help
+            </button>
         </div>
 
         <div class="controls">
@@ -641,5 +663,38 @@
             }
         </script>
     </div>
+
+    <!-- Modal Walkthrough -->
+<div id="walkthroughModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.6);">
+    <div style="background: white; border-radius: 10px; max-width: 800px; margin: 10% auto; padding: 30px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+        <h2 style="margin-top: 0; color: #2c3e50;">📘 How to Use This Dashboard</h2>
+        <ul style="line-height: 1.6; font-size: 1em; padding-left: 20px; color: #333;">
+            <li><strong>Use the Timeline Slider</strong> to move through the mission in time. You can also use your keyboard:
+                <ul style="margin-top: 5px; padding-left: 20px; list-style-type: circle;">
+                    <li><kbd>←</kbd> / <kbd>→</kbd> to step through frames</li>
+                    <li><kbd>Home</kbd> to jump to the beginning</li>
+                    <li><kbd>End</kbd> to jump to the end</li>
+                </ul>
+            </li>
+            <li>The <strong>Altitude Chart</strong> shows drone altitude from sensors vs ground-truth.</li>
+            <li>The <strong>Error Chart</strong> displays position error (in meters) over time.</li>
+            <li>The <strong>Flight Path Map</strong> maps all positions using real geolocation data.</li>
+            <li><strong>Sensor Cards</strong> indicate real-time status per detection system.</li>
+            <li><strong>Performance Metrics</strong> update every 5 seconds with sensor performance.</li>
+        </ul>
+        <p style="margin-top: 20px; font-size: 0.95em; color: #666;"><em>This dashboard dynamically visualizes multi-sensor fusion. Data updates in real time as you scrub through the timeline.</em></p>
+        
+        <button onclick="closeModal()" style="position: absolute; top: 15px; right: 15px; font-size: 1.2em; background: none; border: none; color: #666; cursor: pointer;">✖️</button>
+    </div>
+</div>
+<script>
+    function openModal() {
+        document.getElementById('walkthroughModal').style.display = 'block';
+    }
+    function closeModal() {
+        document.getElementById('walkthroughModal').style.display = 'none';
+    }
+</script>
+
 </body>
 </html>
