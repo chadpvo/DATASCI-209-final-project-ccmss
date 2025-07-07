@@ -35,11 +35,16 @@
         
         .controls {
             background: rgba(255,255,255,0.95);
-            padding: 20px;
             border-radius: 15px;
             margin-bottom: 20px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
+
+            width: 100%;
+            max-width: min(95vw, 1600px);
+            margin: 0 auto;
+            padding: 0 20px;
+            box-sizing: border-box;
         }
         
         .time-controls {
@@ -171,9 +176,14 @@
         .performance-panel {
             background: rgba(255,255,255,0.95);
             border-radius: 15px;
-            padding: 20px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
+
+            width: 100%;
+            max-width: min(95vw, 1600px);
+            margin: 0 auto;
+            padding: 0 20px;
+            box-sizing: border-box;
         }
         
         .metrics-grid {
@@ -209,13 +219,15 @@
             font-size: 0.9em;
             opacity: 0.9;
         }
+
         .main-visuals {
             width: 100%;
-            max-width: min(90vw, 1600px);
+            max-width: min(95vw, 1600px);
             margin: 0 auto;
-            padding: 0 16px;
+            padding: 0 20px;
             box-sizing: border-box;
         }
+
 
 
         @media (max-width: 1200px) {
