@@ -18,7 +18,7 @@
             width: 100%;
             max-width: min(95vw, 1600px);
             box-sizing: border-box;
-            margin: 20px;
+            margin: 20px auto;
         }
 
         .header {
@@ -47,7 +47,7 @@
             backdrop-filter: blur(10px);
             width: 100%;
             max-width: min(95vw, 1600px);
-            margin: 20px;
+            margin: 20px auto;
             padding:20px;
             box-sizing: border-box;
         }
@@ -185,7 +185,7 @@
             backdrop-filter: blur(10px);
             width: 100%;
             max-width: min(95vw, 1600px);
-            margin: 20px;
+            margin: 20px auto;
             padding: 20px;
             box-sizing: border-box;
         }
@@ -223,6 +223,9 @@
             font-size: 0.9em;
             opacity: 0.9;
         }
+        .page-container {
+            padding: 0 16px;
+        }
 
         @media (max-width: 1200px) {
             .charts-grid {
@@ -243,399 +246,400 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🛡️ Multi-Sensor Drone Tracking Dashboard</h1>
-        <p>Real-time fusion analysis: Ground Truth vs Multi-Sensor Detection Systems</p>
-    </div>
-
-    <div class="controls">
-        <div class="time-controls">
-            <label for="timeSlider">Timeline:</label>
-            <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
-            <div id="currentTime" class="time-display">Time: Loading...</div>
+    <div class="page-container">
+        <div class="header">
+            <h1>🛡️ Multi-Sensor Drone Tracking Dashboard</h1>
+            <p>Real-time fusion analysis: Ground Truth vs Multi-Sensor Detection Systems</p>
         </div>
-        
-        <div class="sensor-status">
-            <div class="sensor-card">
-                <h3>🎯 GROUND TRUTH</h3>
-                <div class="status">Active</div>
-            </div>
-            <div class="sensor-card">
-                <h3>📡 ALVIRA (2D Radar)</h3>
-                <div class="status" id="alviraStatus">Checking...</div>
-            </div>
-            <div class="sensor-card">
-                <h3>🌐 ARCUS (3D Radar)</h3>
-                <div class="status" id="arcusStatus">Checking...</div>
-            </div>
-            <div class="sensor-card">
-                <h3>📻 DIANA (RF-DF)</h3>
-                <div class="status" id="dianaStatus">Checking...</div>
-            </div>
-            <div class="sensor-card">
-                <h3>📡 VENUS (RF-DF)</h3>
-                <div class="status" id="venusStatus">Checking...</div>
-            </div>
-        </div>
-    </div>
 
-    <div class="main-visuals">
-        <div class="container">
-          <div class="charts-grid">
-            <div class="chart-panel">
-              <div id="altitudeChart"></div>
+        <div class="controls">
+            <div class="time-controls">
+                <label for="timeSlider">Timeline:</label>
+                <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
+                <div id="currentTime" class="time-display">Time: Loading...</div>
             </div>
-            <div class="chart-panel">
-              <div id="errorChart"></div>
-            </div>
-          </div>
-          <div class="map-container">
-            <div id="flightPathMap"></div>
-          </div>
-        </div>
-      </div>
-      
-    
-
-    <div class="performance-panel">
-        <h2>📊 Real-Time Performance Metrics</h2>
-        <div id="metricsGrid" class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-value">Loading...</div>
-                <div class="metric-label">Initializing System</div>
+            
+            <div class="sensor-status">
+                <div class="sensor-card">
+                    <h3>🎯 GROUND TRUTH</h3>
+                    <div class="status">Active</div>
+                </div>
+                <div class="sensor-card">
+                    <h3>📡 ALVIRA (2D Radar)</h3>
+                    <div class="status" id="alviraStatus">Checking...</div>
+                </div>
+                <div class="sensor-card">
+                    <h3>🌐 ARCUS (3D Radar)</h3>
+                    <div class="status" id="arcusStatus">Checking...</div>
+                </div>
+                <div class="sensor-card">
+                    <h3>📻 DIANA (RF-DF)</h3>
+                    <div class="status" id="dianaStatus">Checking...</div>
+                </div>
+                <div class="sensor-card">
+                    <h3>📡 VENUS (RF-DF)</h3>
+                    <div class="status" id="venusStatus">Checking...</div>
+                </div>
             </div>
         </div>
-    </div>
 
-<script>
-    // Data from Flask
-    const droneData = {{ drone_data_json | safe }};
-    const timeSlider = document.getElementById('timeSlider');
-    const currentTimeDisplay = document.getElementById('currentTime');
-    
-    // Sensor colors for consistent visualization
-    const SENSOR_COLORS = {
-        ground_truth: '#2c3e50',
-        alvira: '#e74c3c',
-        arcus: '#3498db',
-        diana: '#f39c12',
-        venus: '#9b59b6'
-    };
-    
-    // Initialize all visualizations
-    initializeAltitudeChart();
-    initializeErrorChart();
-    initializeFlightPathMap();
-    window.addEventListener('resize', () => {
-        Plotly.Plots.resize('flightPathMap');
-        Plotly.Plots.resize('altitudeChart');
-        Plotly.Plots.resize('errorChart');
-        });
+        <div class="main-visuals">
+            <div class="container">
+            <div class="charts-grid">
+                <div class="chart-panel">
+                <div id="altitudeChart"></div>
+                </div>
+                <div class="chart-panel">
+                <div id="errorChart"></div>
+                </div>
+            </div>
+            <div class="map-container">
+                <div id="flightPathMap"></div>
+            </div>
+            </div>
+        </div>
+        
+        
 
-    
-    // Start performance metrics updates
-    updatePerformanceMetrics();
-    setInterval(updatePerformanceMetrics, 5000); // Update every 5 seconds
-    
-    function initializeAltitudeChart() {
-        const layout = {
-            title: 'Multi-Sensor Altitude Comparison',
-            xaxis: { title: 'Time' },
-            yaxis: { title: 'Altitude (m)' },
-            showlegend: true,
-            margin: { l: 50, r: 20, b: 50, t: 50 }
-        };
-        
-        const traces = [
-            { x: [], y: [], mode: 'lines', name: 'Ground Truth', line: { color: SENSOR_COLORS.ground_truth, width: 3 } },
-            { x: [], y: [], mode: 'lines+markers', name: 'ALVIRA', line: { color: SENSOR_COLORS.alvira }, marker: { size: 4 } },
-            { x: [], y: [], mode: 'lines+markers', name: 'ARCUS', line: { color: SENSOR_COLORS.arcus }, marker: { size: 4 } },
-            { x: [], y: [], mode: 'markers', name: 'Current Position', marker: { size: 12, color: '#e74c3c' } }
-        ];
-        
-        Plotly.newPlot('altitudeChart', traces, layout);
-    }
-    
-    function initializeErrorChart() {
-        const layout = {
-            title: 'Position Error Analysis',
-            xaxis: { title: 'Time' },
-            yaxis: { title: 'Position Error (m)' },
-            showlegend: true,
-            margin: { l: 50, r: 20, b: 50, t: 50 }
-        };
-        
-        const traces = [
-            { x: [], y: [], mode: 'lines+markers', name: 'ALVIRA Error', line: { color: SENSOR_COLORS.alvira }, marker: { size: 4 } },
-            { x: [], y: [], mode: 'lines+markers', name: 'ARCUS Error', line: { color: SENSOR_COLORS.arcus }, marker: { size: 4 } }
-        ];
-        
-        Plotly.newPlot('errorChart', traces, layout);
-    }
-    
-    function initializeFlightPathMap() {
-        const layout = {
-            title: 'Multi-Sensor Flight Path Comparison',
-            mapbox: {
-                style: 'open-street-map',
-                center: { 
-                    lat: ({{ min_latitude }} + {{ max_latitude }}) / 2, 
-                    lon: ({{ min_longitude }} + {{ max_longitude }}) / 2 
-                },
-                zoom: 16
-            },
-            margin: { l: 0, r: 0, b: 0, t: 50 },
-            showlegend: true
-        };
-        
-        const traces = [
-            { type: 'scattermapbox', lon: [], lat: [], mode: 'lines', name: 'Ground Truth', line: { color: SENSOR_COLORS.ground_truth, width: 4 } },
-            { type: 'scattermapbox', lon: [], lat: [], mode: 'lines+markers', name: 'ALVIRA', line: { color: SENSOR_COLORS.alvira }, marker: { size: 6 } },
-            { type: 'scattermapbox', lon: [], lat: [], mode: 'lines+markers', name: 'ARCUS', line: { color: SENSOR_COLORS.arcus }, marker: { size: 6 } },
-            { type: 'scattermapbox', lon: [], lat: [], mode: 'markers', name: 'Current Position', marker: { size: 15, color: '#e74c3c' } }
-        ];
-        
-        Plotly.newPlot('flightPathMap', traces, layout);
-    }
-    
-    function updatePlots(index) {
-        if (index >= droneData.length || index < 0) return;
-        
-        const currentPoint = droneData[index];
-        const currentTime = new Date(currentPoint['datetime(utc)']).toLocaleTimeString();
-        
-        // Update time display
-        currentTimeDisplay.textContent = `Time: ${currentTime}`;
-        
-        // Get data up to current point
-        const dataSlice = droneData.slice(0, index + 1);
-        
-        // Prepare data arrays
-        const times = dataSlice.map(d => d['datetime(utc)']);
-        const gtAltitudes = dataSlice.map(d => d.gt_altitude);
-        const gtLongitudes = dataSlice.map(d => d.gt_longitude);
-        const gtLatitudes = dataSlice.map(d => d.gt_latitude);
-        
-        // Sensor data arrays
-        const alviraAltitudes = dataSlice.map(d => d.alvira_altitude);
-        const alviraLongitudes = dataSlice.map(d => d.alvira_longitude);
-        const alviraLatitudes = dataSlice.map(d => d.alvira_latitude);
-        const alviraErrors = dataSlice.map(d => d.alvira_pos_error_m);
-        
-        const arcusAltitudes = dataSlice.map(d => d.arcus_altitude);
-        const arcusLongitudes = dataSlice.map(d => d.arcus_longitude);
-        const arcusLatitudes = dataSlice.map(d => d.arcus_latitude);
-        const arcusErrors = dataSlice.map(d => d.arcus_pos_error_m);
-        
-        // Update altitude chart
-        Plotly.restyle('altitudeChart', {
-            x: [times, times, times, [currentPoint['datetime(utc)']]],
-            y: [gtAltitudes, alviraAltitudes, arcusAltitudes, [currentPoint.gt_altitude]]
-        }, [0, 1, 2, 3]);
-        
-        // Update error chart
-        Plotly.restyle('errorChart', {
-            x: [times, times],
-            y: [alviraErrors, arcusErrors]
-        }, [0, 1]);
-        
-        // Update flight path map  
-        Plotly.restyle('flightPathMap', {
-            lon: [gtLongitudes, alviraLongitudes, arcusLongitudes, [currentPoint.gt_longitude]],
-            lat: [gtLatitudes, alviraLatitudes, arcusLatitudes, [currentPoint.gt_latitude]]
-        }, [0, 1, 2, 3]);
-        
-        // Update sensor status
-        updateSensorStatus(currentPoint);
-    }
-    
-    function updateSensorStatus(currentPoint) {
-        // ALVIRA status
-        const alviraStatus = document.getElementById('alviraStatus');
-        if (currentPoint.alvira_latitude && !isNaN(currentPoint.alvira_latitude)) {
-            alviraStatus.textContent = `Active - Error: ${currentPoint.alvira_pos_error_m ? currentPoint.alvira_pos_error_m.toFixed(1) : 'N/A'}m`;
-            alviraStatus.style.color = '#2ecc71';
-        } else {
-            alviraStatus.textContent = 'No Detection';
-            alviraStatus.style.color = '#e74c3c';
-        }
-        
-        // ARCUS status
-        const arcusStatus = document.getElementById('arcusStatus');
-        if (currentPoint.arcus_latitude && !isNaN(currentPoint.arcus_latitude)) {
-            arcusStatus.textContent = `Active - Error: ${currentPoint.arcus_pos_error_m ? currentPoint.arcus_pos_error_m.toFixed(1) : 'N/A'}m`;
-            arcusStatus.style.color = '#2ecc71';
-        } else {
-            arcusStatus.textContent = 'No Detection';
-            arcusStatus.style.color = '#e74c3c';
-        }
-        
-        // DIANA status
-        const dianaStatus = document.getElementById('dianaStatus');
-        if (currentPoint.diana_bearing && !isNaN(currentPoint.diana_bearing)) {
-            dianaStatus.textContent = `Active - SNR: ${currentPoint.diana_snr ? currentPoint.diana_snr.toFixed(1) : 'N/A'}dB`;
-            dianaStatus.style.color = '#2ecc71';
-        } else {
-            dianaStatus.textContent = 'No Signal';
-            dianaStatus.style.color = '#e74c3c';
-        }
-        
-        // VENUS status
-        const venusStatus = document.getElementById('venusStatus');
-        if (currentPoint.venus_frequency && !isNaN(currentPoint.venus_frequency)) {
-            venusStatus.textContent = `Active - ${(currentPoint.venus_frequency / 1e6).toFixed(0)}MHz`;
-            venusStatus.style.color = '#2ecc71';
-        } else {
-            venusStatus.textContent = 'No Signal';
-            venusStatus.style.color = '#e74c3c';
-        }
-    }
-    
-    function updatePerformanceMetrics() {
-        fetch('/api/performance_metrics')
-            .then(response => response.json())
-            .then(data => {
-                const metricsGrid = document.getElementById('metricsGrid');
-                metricsGrid.innerHTML = '';
+        <div class="performance-panel">
+            <h2>📊 Real-Time Performance Metrics</h2>
+            <div id="metricsGrid" class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">Loading...</div>
+                    <div class="metric-label">Initializing System</div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Data from Flask
+            const droneData = {{ drone_data_json | safe }};
+            const timeSlider = document.getElementById('timeSlider');
+            const currentTimeDisplay = document.getElementById('currentTime');
+            
+            // Sensor colors for consistent visualization
+            const SENSOR_COLORS = {
+                ground_truth: '#2c3e50',
+                alvira: '#e74c3c',
+                arcus: '#3498db',
+                diana: '#f39c12',
+                venus: '#9b59b6'
+            };
+            
+            // Initialize all visualizations
+            initializeAltitudeChart();
+            initializeErrorChart();
+            initializeFlightPathMap();
+            window.addEventListener('resize', () => {
+                Plotly.Plots.resize('flightPathMap');
+                Plotly.Plots.resize('altitudeChart');
+                Plotly.Plots.resize('errorChart');
+                });
+
+            
+            // Start performance metrics updates
+            updatePerformanceMetrics();
+            setInterval(updatePerformanceMetrics, 5000); // Update every 5 seconds
+            
+            function initializeAltitudeChart() {
+                const layout = {
+                    title: 'Multi-Sensor Altitude Comparison',
+                    xaxis: { title: 'Time' },
+                    yaxis: { title: 'Altitude (m)' },
+                    showlegend: true,
+                    margin: { l: 50, r: 20, b: 50, t: 50 }
+                };
                 
-                // Helper function to determine metric card class
-                function getMetricClass(value, thresholds) {
-                    if (value >= thresholds.good) return 'metric-card';
-                    if (value >= thresholds.warning) return 'metric-card warning';
-                    return 'metric-card error';
+                const traces = [
+                    { x: [], y: [], mode: 'lines', name: 'Ground Truth', line: { color: SENSOR_COLORS.ground_truth, width: 3 } },
+                    { x: [], y: [], mode: 'lines+markers', name: 'ALVIRA', line: { color: SENSOR_COLORS.alvira }, marker: { size: 4 } },
+                    { x: [], y: [], mode: 'lines+markers', name: 'ARCUS', line: { color: SENSOR_COLORS.arcus }, marker: { size: 4 } },
+                    { x: [], y: [], mode: 'markers', name: 'Current Position', marker: { size: 12, color: '#e74c3c' } }
+                ];
+                
+                Plotly.newPlot('altitudeChart', traces, layout);
+            }
+            
+            function initializeErrorChart() {
+                const layout = {
+                    title: 'Position Error Analysis',
+                    xaxis: { title: 'Time' },
+                    yaxis: { title: 'Position Error (m)' },
+                    showlegend: true,
+                    margin: { l: 50, r: 20, b: 50, t: 50 }
+                };
+                
+                const traces = [
+                    { x: [], y: [], mode: 'lines+markers', name: 'ALVIRA Error', line: { color: SENSOR_COLORS.alvira }, marker: { size: 4 } },
+                    { x: [], y: [], mode: 'lines+markers', name: 'ARCUS Error', line: { color: SENSOR_COLORS.arcus }, marker: { size: 4 } }
+                ];
+                
+                Plotly.newPlot('errorChart', traces, layout);
+            }
+            
+            function initializeFlightPathMap() {
+                const layout = {
+                    title: 'Multi-Sensor Flight Path Comparison',
+                    mapbox: {
+                        style: 'open-street-map',
+                        center: { 
+                            lat: ({{ min_latitude }} + {{ max_latitude }}) / 2, 
+                            lon: ({{ min_longitude }} + {{ max_longitude }}) / 2 
+                        },
+                        zoom: 16
+                    },
+                    margin: { l: 0, r: 0, b: 0, t: 50 },
+                    showlegend: true
+                };
+                
+                const traces = [
+                    { type: 'scattermapbox', lon: [], lat: [], mode: 'lines', name: 'Ground Truth', line: { color: SENSOR_COLORS.ground_truth, width: 4 } },
+                    { type: 'scattermapbox', lon: [], lat: [], mode: 'lines+markers', name: 'ALVIRA', line: { color: SENSOR_COLORS.alvira }, marker: { size: 6 } },
+                    { type: 'scattermapbox', lon: [], lat: [], mode: 'lines+markers', name: 'ARCUS', line: { color: SENSOR_COLORS.arcus }, marker: { size: 6 } },
+                    { type: 'scattermapbox', lon: [], lat: [], mode: 'markers', name: 'Current Position', marker: { size: 15, color: '#e74c3c' } }
+                ];
+                
+                Plotly.newPlot('flightPathMap', traces, layout);
+            }
+            
+            function updatePlots(index) {
+                if (index >= droneData.length || index < 0) return;
+                
+                const currentPoint = droneData[index];
+                const currentTime = new Date(currentPoint['datetime(utc)']).toLocaleTimeString();
+                
+                // Update time display
+                currentTimeDisplay.textContent = `Time: ${currentTime}`;
+                
+                // Get data up to current point
+                const dataSlice = droneData.slice(0, index + 1);
+                
+                // Prepare data arrays
+                const times = dataSlice.map(d => d['datetime(utc)']);
+                const gtAltitudes = dataSlice.map(d => d.gt_altitude);
+                const gtLongitudes = dataSlice.map(d => d.gt_longitude);
+                const gtLatitudes = dataSlice.map(d => d.gt_latitude);
+                
+                // Sensor data arrays
+                const alviraAltitudes = dataSlice.map(d => d.alvira_altitude);
+                const alviraLongitudes = dataSlice.map(d => d.alvira_longitude);
+                const alviraLatitudes = dataSlice.map(d => d.alvira_latitude);
+                const alviraErrors = dataSlice.map(d => d.alvira_pos_error_m);
+                
+                const arcusAltitudes = dataSlice.map(d => d.arcus_altitude);
+                const arcusLongitudes = dataSlice.map(d => d.arcus_longitude);
+                const arcusLatitudes = dataSlice.map(d => d.arcus_latitude);
+                const arcusErrors = dataSlice.map(d => d.arcus_pos_error_m);
+                
+                // Update altitude chart
+                Plotly.restyle('altitudeChart', {
+                    x: [times, times, times, [currentPoint['datetime(utc)']]],
+                    y: [gtAltitudes, alviraAltitudes, arcusAltitudes, [currentPoint.gt_altitude]]
+                }, [0, 1, 2, 3]);
+                
+                // Update error chart
+                Plotly.restyle('errorChart', {
+                    x: [times, times],
+                    y: [alviraErrors, arcusErrors]
+                }, [0, 1]);
+                
+                // Update flight path map  
+                Plotly.restyle('flightPathMap', {
+                    lon: [gtLongitudes, alviraLongitudes, arcusLongitudes, [currentPoint.gt_longitude]],
+                    lat: [gtLatitudes, alviraLatitudes, arcusLatitudes, [currentPoint.gt_latitude]]
+                }, [0, 1, 2, 3]);
+                
+                // Update sensor status
+                updateSensorStatus(currentPoint);
+            }
+            
+            function updateSensorStatus(currentPoint) {
+                // ALVIRA status
+                const alviraStatus = document.getElementById('alviraStatus');
+                if (currentPoint.alvira_latitude && !isNaN(currentPoint.alvira_latitude)) {
+                    alviraStatus.textContent = `Active - Error: ${currentPoint.alvira_pos_error_m ? currentPoint.alvira_pos_error_m.toFixed(1) : 'N/A'}m`;
+                    alviraStatus.style.color = '#2ecc71';
+                } else {
+                    alviraStatus.textContent = 'No Detection';
+                    alviraStatus.style.color = '#e74c3c';
                 }
                 
-                // ALVIRA metrics
-                if (data.alvira) {
-                    const detectionClass = getMetricClass(data.alvira.detection_rate, {good: 70, warning: 40});
-                    const errorClass = data.alvira.mean_pos_error < 30 ? 'metric-card' : 
-                                     data.alvira.mean_pos_error < 60 ? 'metric-card warning' : 'metric-card error';
-                    
-                    metricsGrid.innerHTML += `
-                        <div class="${detectionClass}">
-                            <div class="metric-value">${data.alvira.detection_rate.toFixed(1)}%</div>
-                            <div class="metric-label">ALVIRA Detection Rate</div>
-                        </div>
-                        <div class="${errorClass}">
-                            <div class="metric-value">${data.alvira.mean_pos_error.toFixed(1)}m</div>
-                            <div class="metric-label">ALVIRA Avg Position Error</div>
-                        </div>
-                    `;
+                // ARCUS status
+                const arcusStatus = document.getElementById('arcusStatus');
+                if (currentPoint.arcus_latitude && !isNaN(currentPoint.arcus_latitude)) {
+                    arcusStatus.textContent = `Active - Error: ${currentPoint.arcus_pos_error_m ? currentPoint.arcus_pos_error_m.toFixed(1) : 'N/A'}m`;
+                    arcusStatus.style.color = '#2ecc71';
+                } else {
+                    arcusStatus.textContent = 'No Detection';
+                    arcusStatus.style.color = '#e74c3c';
                 }
                 
-                // ARCUS metrics
-                if (data.arcus) {
-                    const detectionClass = getMetricClass(data.arcus.detection_rate, {good: 70, warning: 40});
-                    const errorClass = data.arcus.mean_pos_error < 30 ? 'metric-card' : 
-                                     data.arcus.mean_pos_error < 60 ? 'metric-card warning' : 'metric-card error';
-                    
-                    metricsGrid.innerHTML += `
-                        <div class="${detectionClass}">
-                            <div class="metric-value">${data.arcus.detection_rate.toFixed(1)}%</div>
-                            <div class="metric-label">ARCUS Detection Rate</div>
-                        </div>
-                        <div class="${errorClass}">
-                            <div class="metric-value">${data.arcus.mean_pos_error.toFixed(1)}m</div>
-                            <div class="metric-label">ARCUS Avg Position Error</div>
-                        </div>
-                    `;
+                // DIANA status
+                const dianaStatus = document.getElementById('dianaStatus');
+                if (currentPoint.diana_bearing && !isNaN(currentPoint.diana_bearing)) {
+                    dianaStatus.textContent = `Active - SNR: ${currentPoint.diana_snr ? currentPoint.diana_snr.toFixed(1) : 'N/A'}dB`;
+                    dianaStatus.style.color = '#2ecc71';
+                } else {
+                    dianaStatus.textContent = 'No Signal';
+                    dianaStatus.style.color = '#e74c3c';
                 }
                 
-                // DIANA metrics
-                if (data.diana) {
-                    const detectionClass = getMetricClass(data.diana.detection_rate, {good: 50, warning: 25});
-                    const snrClass = data.diana.mean_snr > -70 ? 'metric-card' : 'metric-card warning';
-                    
-                    metricsGrid.innerHTML += `
-                        <div class="${detectionClass}">
-                            <div class="metric-value">${data.diana.detection_rate.toFixed(1)}%</div>
-                            <div class="metric-label">DIANA Detection Rate</div>
-                        </div>
-                        <div class="${snrClass}">
-                            <div class="metric-value">${data.diana.mean_snr.toFixed(1)}dB</div>
-                            <div class="metric-label">DIANA Avg SNR</div>
-                        </div>
-                    `;
+                // VENUS status
+                const venusStatus = document.getElementById('venusStatus');
+                if (currentPoint.venus_frequency && !isNaN(currentPoint.venus_frequency)) {
+                    venusStatus.textContent = `Active - ${(currentPoint.venus_frequency / 1e6).toFixed(0)}MHz`;
+                    venusStatus.style.color = '#2ecc71';
+                } else {
+                    venusStatus.textContent = 'No Signal';
+                    venusStatus.style.color = '#e74c3c';
                 }
-                
-                // VENUS metrics
-                if (data.venus) {
-                    const detectionClass = getMetricClass(data.venus.detection_rate, {good: 50, warning: 25});
-                    
-                    metricsGrid.innerHTML += `
-                        <div class="${detectionClass}">
-                            <div class="metric-value">${data.venus.detection_rate.toFixed(1)}%</div>
-                            <div class="metric-label">VENUS Detection Rate</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-value">${(data.venus.mean_frequency / 1e6).toFixed(0)}MHz</div>
-                            <div class="metric-label">VENUS Avg Frequency</div>
-                        </div>
-                    `;
-                }
-                
-                // Overall system status
-                const totalSensors = Object.keys(data).length;
-                metricsGrid.innerHTML += `
-                    <div class="metric-card">
-                        <div class="metric-value">${totalSensors}</div>
-                        <div class="metric-label">Active Sensors</div>
-                    </div>
-                `;
-            })
-            .catch(error => {
-                console.error('Error fetching metrics:', error);
-                document.getElementById('metricsGrid').innerHTML = `
-                    <div class="metric-card error">
-                        <div class="metric-value">Error</div>
-                        <div class="metric-label">Loading Metrics</div>
-                    </div>
-                `;
+            }
+            
+            function updatePerformanceMetrics() {
+                fetch('/api/performance_metrics')
+                    .then(response => response.json())
+                    .then(data => {
+                        const metricsGrid = document.getElementById('metricsGrid');
+                        metricsGrid.innerHTML = '';
+                        
+                        // Helper function to determine metric card class
+                        function getMetricClass(value, thresholds) {
+                            if (value >= thresholds.good) return 'metric-card';
+                            if (value >= thresholds.warning) return 'metric-card warning';
+                            return 'metric-card error';
+                        }
+                        
+                        // ALVIRA metrics
+                        if (data.alvira) {
+                            const detectionClass = getMetricClass(data.alvira.detection_rate, {good: 70, warning: 40});
+                            const errorClass = data.alvira.mean_pos_error < 30 ? 'metric-card' : 
+                                            data.alvira.mean_pos_error < 60 ? 'metric-card warning' : 'metric-card error';
+                            
+                            metricsGrid.innerHTML += `
+                                <div class="${detectionClass}">
+                                    <div class="metric-value">${data.alvira.detection_rate.toFixed(1)}%</div>
+                                    <div class="metric-label">ALVIRA Detection Rate</div>
+                                </div>
+                                <div class="${errorClass}">
+                                    <div class="metric-value">${data.alvira.mean_pos_error.toFixed(1)}m</div>
+                                    <div class="metric-label">ALVIRA Avg Position Error</div>
+                                </div>
+                            `;
+                        }
+                        
+                        // ARCUS metrics
+                        if (data.arcus) {
+                            const detectionClass = getMetricClass(data.arcus.detection_rate, {good: 70, warning: 40});
+                            const errorClass = data.arcus.mean_pos_error < 30 ? 'metric-card' : 
+                                            data.arcus.mean_pos_error < 60 ? 'metric-card warning' : 'metric-card error';
+                            
+                            metricsGrid.innerHTML += `
+                                <div class="${detectionClass}">
+                                    <div class="metric-value">${data.arcus.detection_rate.toFixed(1)}%</div>
+                                    <div class="metric-label">ARCUS Detection Rate</div>
+                                </div>
+                                <div class="${errorClass}">
+                                    <div class="metric-value">${data.arcus.mean_pos_error.toFixed(1)}m</div>
+                                    <div class="metric-label">ARCUS Avg Position Error</div>
+                                </div>
+                            `;
+                        }
+                        
+                        // DIANA metrics
+                        if (data.diana) {
+                            const detectionClass = getMetricClass(data.diana.detection_rate, {good: 50, warning: 25});
+                            const snrClass = data.diana.mean_snr > -70 ? 'metric-card' : 'metric-card warning';
+                            
+                            metricsGrid.innerHTML += `
+                                <div class="${detectionClass}">
+                                    <div class="metric-value">${data.diana.detection_rate.toFixed(1)}%</div>
+                                    <div class="metric-label">DIANA Detection Rate</div>
+                                </div>
+                                <div class="${snrClass}">
+                                    <div class="metric-value">${data.diana.mean_snr.toFixed(1)}dB</div>
+                                    <div class="metric-label">DIANA Avg SNR</div>
+                                </div>
+                            `;
+                        }
+                        
+                        // VENUS metrics
+                        if (data.venus) {
+                            const detectionClass = getMetricClass(data.venus.detection_rate, {good: 50, warning: 25});
+                            
+                            metricsGrid.innerHTML += `
+                                <div class="${detectionClass}">
+                                    <div class="metric-value">${data.venus.detection_rate.toFixed(1)}%</div>
+                                    <div class="metric-label">VENUS Detection Rate</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value">${(data.venus.mean_frequency / 1e6).toFixed(0)}MHz</div>
+                                    <div class="metric-label">VENUS Avg Frequency</div>
+                                </div>
+                            `;
+                        }
+                        
+                        // Overall system status
+                        const totalSensors = Object.keys(data).length;
+                        metricsGrid.innerHTML += `
+                            <div class="metric-card">
+                                <div class="metric-value">${totalSensors}</div>
+                                <div class="metric-label">Active Sensors</div>
+                            </div>
+                        `;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching metrics:', error);
+                        document.getElementById('metricsGrid').innerHTML = `
+                            <div class="metric-card error">
+                                <div class="metric-value">Error</div>
+                                <div class="metric-label">Loading Metrics</div>
+                            </div>
+                        `;
+                    });
+            }
+            
+            // Event listeners
+            timeSlider.addEventListener('input', (event) => {
+                const selectedIndex = parseInt(event.target.value);
+                updatePlots(selectedIndex);
             });
-    }
-    
-    // Event listeners
-    timeSlider.addEventListener('input', (event) => {
-        const selectedIndex = parseInt(event.target.value);
-        updatePlots(selectedIndex);
-    });
-    
-    // Keyboard controls for better navigation
-    document.addEventListener('keydown', (event) => {
-        let currentIndex = parseInt(timeSlider.value);
-        
-        switch(event.key) {
-            case 'ArrowLeft':
-                if (currentIndex > 0) {
-                    timeSlider.value = currentIndex - 1;
-                    updatePlots(currentIndex - 1);
+            
+            // Keyboard controls for better navigation
+            document.addEventListener('keydown', (event) => {
+                let currentIndex = parseInt(timeSlider.value);
+                
+                switch(event.key) {
+                    case 'ArrowLeft':
+                        if (currentIndex > 0) {
+                            timeSlider.value = currentIndex - 1;
+                            updatePlots(currentIndex - 1);
+                        }
+                        break;
+                    case 'ArrowRight':
+                        if (currentIndex < droneData.length - 1) {
+                            timeSlider.value = currentIndex + 1;
+                            updatePlots(currentIndex + 1);
+                        }
+                        break;
+                    case 'Home':
+                        timeSlider.value = 0;
+                        updatePlots(0);
+                        break;
+                    case 'End':
+                        timeSlider.value = droneData.length - 1;
+                        updatePlots(droneData.length - 1);
+                        break;
                 }
-                break;
-            case 'ArrowRight':
-                if (currentIndex < droneData.length - 1) {
-                    timeSlider.value = currentIndex + 1;
-                    updatePlots(currentIndex + 1);
-                }
-                break;
-            case 'Home':
-                timeSlider.value = 0;
+            });
+            
+            // Initialize with first data point.
+            if (droneData.length > 0) {
                 updatePlots(0);
-                break;
-            case 'End':
-                timeSlider.value = droneData.length - 1;
-                updatePlots(droneData.length - 1);
-                break;
-        }
-    });
-    
-    // Initialize with first data point.
-    if (droneData.length > 0) {
-        updatePlots(0);
-        console.log(`Dashboard initialized with ${droneData.length} data points`);
-    } else {
-        console.error('No data available for dashboard');
-    }
-</script>
-
+                console.log(`Dashboard initialized with ${droneData.length} data points`);
+            } else {
+                console.error('No data available for dashboard');
+            }
+        </script>
+    </div>
 </body>
 </html>
