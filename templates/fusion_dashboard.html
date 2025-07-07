@@ -110,11 +110,15 @@
             opacity: 0.9;
         }
         
-        .charts-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        .full-width-container {
+            width: 100%;
             margin-bottom: 20px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
         
         .chart-panel {
@@ -193,9 +197,9 @@
             font-size: 0.9em;
             opacity: 0.9;
         }
-        
+
         @media (max-width: 1200px) {
-            .charts-container {
+            .charts-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -249,7 +253,7 @@
         </div>
     </div>
 
-    <div class="charts-container">
+    <div class="full-width-container charts-grid">
         <div class="chart-panel">
             <div id="altitudeChart"></div>
         </div>
