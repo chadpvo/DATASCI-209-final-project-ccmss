@@ -412,21 +412,20 @@
                 
                 Plotly.newPlot('flightPathMap', traces, layout);
             }
-            
+            // Filter Sensor out
             function getSelectedSensors() {
                 const checkboxes = document.querySelectorAll('#sensorFilter input[type="checkbox"]');
                 const selected = Array.from(checkboxes)
                     .filter(cb => cb.checked)
                     .map(cb => cb.value);
-
-                if (selected.includes("ALL") || selected.length === 0) {
-                    return ["alvira", "arcus", "diana", "venus"]; 
+                if (selected.includes("ALL")) {
+                    return ["alvira", "arcus", "diana", "venus"];
                 }
 
                 return selected;
             }
 
-            
+      
             function updatePlots(index) {
                 if (index >= droneData.length || index < 0) return;
                 
@@ -464,19 +463,21 @@
                 
                 // Drop Down Code
                 const selected = getSelectedSensors();
+                const showAlt = selected.includes("alvira") || selected.includes("arcus");
+                const showMap = selected.includes("alvira") || selected.includes("arcus");
 
                 Plotly.restyle('altitudeChart', {
                     x: [
-                        times, // Ground Truth (always on)
+                        showAlt ? times : [null],  // ground truth
                         selected.includes("alvira") ? times : [null],
                         selected.includes("arcus") ? times : [null],
-                        [currentPoint['datetime(utc)']]
+                        showAlt ? [currentPoint['datetime(utc)']] : [null]
                     ],
                     y: [
-                        gtAltitudes,
+                        showAlt ? gtAltitudes : [null],
                         selected.includes("alvira") ? alviraAltitudes : [null],
                         selected.includes("arcus") ? arcusAltitudes : [null],
-                        [currentPoint.gt_altitude]
+                        showAlt ? [currentPoint.gt_altitude] : [null]
                     ]
                 }, [0, 1, 2, 3]);
 
@@ -510,19 +511,21 @@
             
             Plotly.restyle('flightPathMap', {
                 lon: [
-                    gtLongitudes,
+                    showMap ? gtLongitudes : [null],
                     selected.includes("alvira") ? alviraLongitudes : [null],
                     selected.includes("arcus") ? arcusLongitudes : [null],
-                    [currentPoint.gt_longitude]
+                    showMap ? [currentPoint.gt_longitude] : [null]
                 ],
                 lat: [
-                    gtLatitudes,
+                    showMap ? gtLatitudes : [null],
                     selected.includes("alvira") ? alviraLatitudes : [null],
                     selected.includes("arcus") ? arcusLatitudes : [null],
-                    [currentPoint.gt_latitude]
+                    showMap ? [currentPoint.gt_latitude] : [null]
                 ]
             }, [0, 1, 2, 3]);
+
             updateSensorStatus(currentPoint);}
+
             function updateSensorStatus(currentPoint) {
                 // ALVIRA status
                 const alviraStatus = document.getElementById('alviraStatus');
@@ -675,15 +678,19 @@
             });
 
             //check box
-            document.querySelectorAll('#sensorFilter input[type="checkbox"]').forEach(cb => {
-                cb.addEventListener('change', () => {
-                    const isAll = cb.value === "ALL";
-                    const allCheckbox = document.querySelector('#sensorFilter input[value="ALL"]');
+            const allCheckbox = document.querySelector('#sensorFilter input[value="ALL"]');
+            const individualCheckboxes = Array.from(document.querySelectorAll('#sensorFilter input:not([value="ALL"])'));
 
-                    if (isAll && cb.checked) {
-                        document.querySelectorAll('#sensorFilter input:not([value="ALL"])').forEach(c => c.checked = true);
-                    } else if (!isAll && cb.checked) {
-                        allCheckbox.checked = false;
+            document.querySelectorAll('#sensorFilter input').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const selected = individualCheckboxes.filter(c => c.checked);
+
+                    if (cb.value === "ALL") {
+                        if (cb.checked) {
+                            individualCheckboxes.forEach(c => c.checked = true);
+                        }
+                    } else {
+                        allCheckbox.checked = selected.length === individualCheckboxes.length;
                     }
 
                     // Refresh current view
