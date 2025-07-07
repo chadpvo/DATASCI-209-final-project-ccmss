@@ -119,6 +119,9 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
         }
         
         .chart-panel {
@@ -197,6 +200,12 @@
             font-size: 0.9em;
             opacity: 0.9;
         }
+        .main-visuals {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
 
         @media (max-width: 1200px) {
             .charts-grid {
@@ -252,19 +261,20 @@
             </div>
         </div>
     </div>
-
-    <div class="full-width-container charts-grid">
-        <div class="chart-panel">
-            <div id="altitudeChart"></div>
+    <div class="main-visuals">
+        <div class="charts-grid">
+            <div class="chart-panel">
+                <div id="altitudeChart"></div>
+            </div>
+            <div class="chart-panel">
+                <div id="errorChart"></div>
+            </div>
         </div>
-        <div class="chart-panel">
-            <div id="errorChart"></div>
+        <div class="map-container">
+            <div id="flightPathMap"></div>
         </div>
     </div>
-
-    <div class="map-container">
-        <div id="flightPathMap"></div>
-    </div>
+    
 
     <div class="performance-panel">
         <h2>📊 Real-Time Performance Metrics</h2>
