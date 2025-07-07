@@ -251,7 +251,7 @@
             <h1>🛡️ Multi-Sensor Drone Tracking Dashboard</h1>
             <p>Real-time fusion analysis: Ground Truth vs Multi-Sensor Detection Systems</p>
             <button onclick="openModal()" style="position: absolute; top: 10px; right: 10px; padding: 10px 15px; border: none; background: #ffffffdd; color: #2c3e50; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                ❓ Help
+                ❓ Instructions
             </button>
         </div>
 
@@ -260,6 +260,14 @@
                 <label for="timeSlider">Timeline:</label>
                 <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
                 <div id="currentTime" class="time-display">Time: Loading...</div>
+                <label for="sensorFilter">Select Sensor(s):</label>
+                <div id="sensorFilter" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <label><input type="checkbox" value="ALL" checked> All</label>
+                    <label><input type="checkbox" value="alvira" checked> ALVIRA</label>
+                    <label><input type="checkbox" value="arcus" checked> ARCUS</label>
+                    <label><input type="checkbox" value="diana" checked> DIANA</label>
+                    <label><input type="checkbox" value="venus" checked> VENUS</label>
+                </div>
             </div>
             
             <div class="sensor-status">
@@ -405,6 +413,20 @@
                 Plotly.newPlot('flightPathMap', traces, layout);
             }
             
+            function getSelectedSensors() {
+                const checkboxes = document.querySelectorAll('#sensorFilter input[type="checkbox"]');
+                const selected = Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+
+                if (selected.includes("ALL") || selected.length === 0) {
+                    return ["alvira", "arcus", "diana", "venus"]; 
+                }
+
+                return selected;
+            }
+
+            
             function updatePlots(index) {
                 if (index >= droneData.length || index < 0) return;
                 
@@ -434,28 +456,73 @@
                 const arcusLatitudes = dataSlice.map(d => d.arcus_latitude);
                 const arcusErrors = dataSlice.map(d => d.arcus_pos_error_m);
                 
-                // Update altitude chart
-                Plotly.restyle('altitudeChart', {
-                    x: [times, times, times, [currentPoint['datetime(utc)']]],
-                    y: [gtAltitudes, alviraAltitudes, arcusAltitudes, [currentPoint.gt_altitude]]
-                }, [0, 1, 2, 3]);
+                // Manan's Old Code
+                // Plotly.restyle('altitudeChart', {
+                //    x: [times, times, times, [currentPoint['datetime(utc)']]],
+                //    y: [gtAltitudes, alviraAltitudes, arcusAltitudes, [currentPoint.gt_altitude]]
+                //}, [0, 1, 2, 3]);
                 
+                // Drop Down Code
+                const selected = getSelectedSensors();
+
+                Plotly.restyle('altitudeChart', {
+                    x: [
+                        times, // Ground Truth (always on)
+                        selected.includes("alvira") ? times : [null],
+                        selected.includes("arcus") ? times : [null],
+                        [currentPoint['datetime(utc)']]
+                    ],
+                    y: [
+                        gtAltitudes,
+                        selected.includes("alvira") ? alviraAltitudes : [null],
+                        selected.includes("arcus") ? arcusAltitudes : [null],
+                        [currentPoint.gt_altitude]
+                    ]
+                }, [0, 1, 2, 3]);
+
                 // Update error chart
+                //Plotly.restyle('errorChart', {
+                //    x: [times, times],
+                //    y: [alviraErrors, arcusErrors]
+                //}, [0, 1]); 
+
                 Plotly.restyle('errorChart', {
-                    x: [times, times],
-                    y: [alviraErrors, arcusErrors]
+                    x: [
+                        selected.includes("alvira") ? times : [null],
+                        selected.includes("arcus") ? times : [null]
+                    ],
+                    y: [
+                        selected.includes("alvira") ? alviraErrors : [null],
+                        selected.includes("arcus") ? arcusErrors : [null]
+                    ]
                 }, [0, 1]);
+
                 
                 // Update flight path map  
-                Plotly.restyle('flightPathMap', {
-                    lon: [gtLongitudes, alviraLongitudes, arcusLongitudes, [currentPoint.gt_longitude]],
-                    lat: [gtLatitudes, alviraLatitudes, arcusLatitudes, [currentPoint.gt_latitude]]
-                }, [0, 1, 2, 3]);
+                //Plotly.restyle('flightPathMap', {
+                //    lon: [gtLongitudes, alviraLongitudes, arcusLongitudes, [currentPoint.gt_longitude]],
+                //    lat: [gtLatitudes, alviraLatitudes, arcusLatitudes, [currentPoint.gt_latitude]]
+                //}, [0, 1, 2, 3]);
                 
                 // Update sensor status
                 updateSensorStatus(currentPoint);
-            }
+                //}
             
+            Plotly.restyle('flightPathMap', {
+                lon: [
+                    gtLongitudes,
+                    selected.includes("alvira") ? alviraLongitudes : [null],
+                    selected.includes("arcus") ? arcusLongitudes : [null],
+                    [currentPoint.gt_longitude]
+                ],
+                lat: [
+                    gtLatitudes,
+                    selected.includes("alvira") ? alviraLatitudes : [null],
+                    selected.includes("arcus") ? arcusLatitudes : [null],
+                    [currentPoint.gt_latitude]
+                ]
+            }, [0, 1, 2, 3]);
+
             function updateSensorStatus(currentPoint) {
                 // ALVIRA status
                 const alviraStatus = document.getElementById('alviraStatus');
@@ -606,6 +673,24 @@
                 const selectedIndex = parseInt(event.target.value);
                 updatePlots(selectedIndex);
             });
+
+            //check box
+            document.querySelectorAll('#sensorFilter input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const isAll = cb.value === "ALL";
+                    const allCheckbox = document.querySelector('#sensorFilter input[value="ALL"]');
+
+                    if (isAll && cb.checked) {
+                        document.querySelectorAll('#sensorFilter input:not([value="ALL"])').forEach(c => c.checked = true);
+                    } else if (!isAll && cb.checked) {
+                        allCheckbox.checked = false;
+                    }
+
+                    // Refresh current view
+                    updatePlots(parseInt(timeSlider.value));
+                });
+            });
+
             
             // Keyboard controls for better navigation
             document.addEventListener('keydown', (event) => {
@@ -645,7 +730,6 @@
         </script>
     </div>
 
-    <!-- Modal Walkthrough -->
 <div id="walkthroughModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.6);">
     <div style="background: white; border-radius: 10px; max-width: 800px; margin: 10% auto; padding: 30px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
         <h2 style="margin-top: 0; color: #2c3e50;">📘 How to Use This Dashboard</h2>
