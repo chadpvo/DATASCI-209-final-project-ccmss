@@ -8,6 +8,7 @@
     <style>
         html {
             overflow-x: hidden;
+            height: 100%;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,6 +18,8 @@
             color: #333;
             min-height: 100vh;
             overflow-x: hidden;
+            overflow-y: auto;  /* <-- Ensure scrolling occurs here */
+            position: relative; /* <-- Optional, but helps isolate sticky scope */
         }
         .main-visuals {
             width: 100%;
@@ -69,6 +72,7 @@
             padding: 10px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             width: 100%;
+            outline: 2px solid lime;
         }
         
         .time-controls label {
