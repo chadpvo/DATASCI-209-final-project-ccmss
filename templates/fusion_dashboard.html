@@ -72,7 +72,14 @@
             padding: 0 16px;
             box-sizing: border-box;
         }
+        .chart-section {
+        margin-bottom: 30px;
+        color: white;
+        }
 
+        .chart-description {
+        margin-bottom: 10px;
+        }
         
         .time-slider {
             flex: 1;
@@ -335,18 +342,19 @@
                     </div>
                   </div>                  
             </div>
-            <div class="container" style="color: white; margin-bottom: 10px;">
-                <h3>🗺️ Multi-Sensor Flight Path Map</h3>
-                <p>
-                  The map shows live tracking overlays from each sensor versus the Ground Truth flight path.
-                  Black represents the known trajectory; other colors represent sensor-reported tracks.
-                  Use this to compare spatial alignment and detect location offsets or tracking divergence.
-                </p>
-              </div>
-              
-            <div class="map-container">
-                <div id="flightPathMap"></div>
-            </div>
+            <div class="container chart-section">
+                <div class="chart-description">
+                  <h3>🗺️ Multi-Sensor Flight Path Map</h3>
+                  <p>
+                    The map shows live tracking overlays from each sensor versus the Ground Truth flight path.
+                    Black represents the known trajectory; other colors represent sensor-reported tracks.
+                    Use this to compare spatial alignment and detect location offsets or tracking divergence.
+                  </p>
+                </div>
+                <div class="map-container">
+                  <div id="flightPathMap"></div>
+                </div>
+              </div>              
             </div>
         </div>
 
