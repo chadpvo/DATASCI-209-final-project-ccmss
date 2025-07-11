@@ -294,22 +294,68 @@
             </div>
         </div>
 
+        <div class="container" style="color: white; margin-top: 10px; margin-bottom: 20px;">
+            <h3>🧭 Timeline & Sensor Selection</h3>
+            <p>
+              Scrub through the drone's flight using the timeline slider. Use checkboxes to toggle specific sensors.
+              Ground Truth acts as the benchmark trajectory, while each sensor system reports its own detections.
+              Status cards summarize real-time performance — whether a sensor is active, and if so, its current error or signal level.
+            </p>
+          </div>
+          
+
         <div class="main-visuals">
             <div class="container">
             <div class="charts-grid">
+                <div class="container" style="color: white; margin-bottom: 10px;">
+                    <h3>📶 Altitude Tracking</h3>
+                    <p>
+                      This chart shows each sensor's reported altitude over time compared to the Ground Truth (black line).
+                      Discontinuities or spikes may indicate lost tracking, sensor drift, or latency.
+                      Use this chart to validate the reliability of vertical position detection.
+                    </p>
+                  </div>
+                  
                 <div class="chart-panel">
                 <div id="altitudeChart"></div>
                 </div>
+                <div class="container" style="color: white; margin-bottom: 10px;">
+                    <h3>📉 Position Error Analysis</h3>
+                    <p>
+                      Displays how far off each sensor's reported position is from the Ground Truth, measured in meters.
+                      Lower error indicates better tracking performance.
+                      High error values may point to environmental interference or weak signal confidence.
+                    </p>
+                  </div>
+                  
                 <div class="chart-panel">
                 <div id="errorChart"></div>
                 </div>
             </div>
+            <div class="container" style="color: white; margin-bottom: 10px;">
+                <h3>🗺️ Multi-Sensor Flight Path Map</h3>
+                <p>
+                  The map shows live tracking overlays from each sensor versus the Ground Truth flight path.
+                  Black represents the known trajectory; other colors represent sensor-reported tracks.
+                  Use this to compare spatial alignment and detect location offsets or tracking divergence.
+                </p>
+              </div>
+              
             <div class="map-container">
                 <div id="flightPathMap"></div>
             </div>
             </div>
         </div>
-        
+
+        <div class="container" style="color: white; margin-bottom: 10px;">
+            <h3>📊 Real-Time Sensor Performance</h3>
+            <p>
+              These metrics summarize how well each sensor is performing in terms of detection rate and error.
+              Cards are color-coded: <span style="color:#2ecc71;">green</span> for good, <span style="color:#f39c12;">yellow</span> for warning, and <span style="color:#e74c3c;">red</span> for critical.
+              Values update every 5 seconds to reflect the latest results.
+            </p>
+          </div>
+          
         
 
         <div class="performance-panel">
@@ -321,7 +367,17 @@
                 </div>
             </div>
         </div>
-
+        <div class="container" style="color: white; margin-top: 20px;">
+            <h3>🔍 Sensor System Key</h3>
+            <ul>
+              <li><strong>GROUND TRUTH</strong>: GPS-based, serves as baseline truth.</li>
+              <li><strong>ALVIRA</strong>: 2D radar — tracks lateral position, no altitude.</li>
+              <li><strong>ARCUS</strong>: 3D radar — reports full XYZ coordinates.</li>
+              <li><strong>DIANA</strong>: RF-DF (radio direction-finding), sensitive to signal quality.</li>
+              <li><strong>VENUS</strong>: RF-DF operating on a different frequency band.</li>
+            </ul>
+          </div>
+          
         <script>
             // Data from Flask
             const droneData = {{ drone_data_json | safe }};
