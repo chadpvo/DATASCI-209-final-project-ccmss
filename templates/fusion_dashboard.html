@@ -234,6 +234,14 @@
             padding: 0 16px;
         }
 
+        .sticky-slider {
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(6px);
+            background: rgba(31, 60, 136, 0.85);
+        }
+
+
         @media (max-width: 1200px) {
             .charts-grid {
                 grid-template-columns: 1fr;
@@ -262,8 +270,17 @@
             </button>
         </div>
 
+        <div class="container" style="color: white; margin-top: 10px; margin-bottom: 20px;">
+            <h3>🧭 Timeline & Sensor Selection</h3>
+            <p>
+              Scrub through the drone's flight using the timeline slider. Use checkboxes to toggle specific sensors.
+              Ground Truth acts as the benchmark trajectory, while each sensor system reports its own detections.
+              Status cards summarize real-time performance — whether a sensor is active, and if so, its current error or signal level.
+            </p>
+        </div>
+
         <div class="controls">
-            <div class="time-controls">
+            <div class="time-controls sticky-slider">
                 <label for="timeSlider">Timeline:</label>
                 <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
                 <div id="currentTime" class="time-display">Time: Loading...</div>
@@ -300,15 +317,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="container" style="color: white; margin-top: 10px; margin-bottom: 20px;">
-            <h3>🧭 Timeline & Sensor Selection</h3>
-            <p>
-              Scrub through the drone's flight using the timeline slider. Use checkboxes to toggle specific sensors.
-              Ground Truth acts as the benchmark trajectory, while each sensor system reports its own detections.
-              Status cards summarize real-time performance — whether a sensor is active, and if so, its current error or signal level.
-            </p>
-          </div>
           
 
         <div class="main-visuals">
