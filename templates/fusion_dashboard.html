@@ -8,6 +8,7 @@
     <style>
         html {
             overflow-x: hidden;
+            overflow-y: auto; 
             height: 100%;
         }
         body {
@@ -17,9 +18,14 @@
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: #333;
             min-height: 100vh;
-            overflow-x: hidden;
-            overflow-y: auto;  /* <-- Ensure scrolling occurs here */
-            position: relative; /* <-- Optional, but helps isolate sticky scope */
+            overflow: visible;
+        }
+        .time-controls {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+            background: red !important;
+            display: flex;
         }
         .main-visuals {
             width: 100%;
@@ -57,12 +63,6 @@
             margin: 20px auto;
             padding:20px;
             box-sizing: border-box;
-        }
-        .time-controls {
-            position: sticky !important;
-            top: 0 !important;
-            z-index: 1000 !important;
-            background: red !important;
         }
 
         
