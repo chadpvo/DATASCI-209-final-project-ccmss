@@ -52,12 +52,12 @@
             box-sizing: border-box;
         }
         
-        .time-controls {
+        /*.time-controls {
             display: flex;
             align-items: center;
             gap: 20px;
             margin-bottom: 15px;
-        }
+        }*/
         
         .time-controls label {
             font-weight: bold;
@@ -139,6 +139,17 @@
         .full-width-container {
             width: 100%;
             margin-bottom: 20px;
+        }
+
+        .sticky-slider {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            backdrop-filter: blur(6px);
+            background: rgba(31, 60, 136, 0.85);
+            padding: 10px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
         }
 
         .charts-grid {
@@ -234,17 +245,6 @@
             padding: 0 16px;
         }
 
-        .sticky-slider {
-            position: sticky;
-            top: 0;
-            z-index: 999;
-            backdrop-filter: blur(6px);
-            background: rgba(31, 60, 136, 0.85);
-            padding: 10px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            width: 100%;
-        }
-
 
 
         @media (max-width: 1200px) {
@@ -287,7 +287,7 @@
         <div class="time-controls sticky-slider">
             <label for="timeSlider">Timeline:</label>
             <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
-        <div id="currentTime" class="time-display">Time: Loading...</div>
+            <div id="currentTime" class="time-display">Time: Loading...</div>
         </div>
 
         <div class="controls">
