@@ -307,30 +307,33 @@
         <div class="main-visuals">
             <div class="container">
             <div class="charts-grid">
-                <div class="container" style="color: white; margin-bottom: 10px;">
-                    <h3>📶 Altitude Tracking</h3>
-                    <p>
-                      This chart shows each sensor's reported altitude over time compared to the Ground Truth (black line).
-                      Discontinuities or spikes may indicate lost tracking, sensor drift, or latency.
-                      Use this chart to validate the reliability of vertical position detection.
-                    </p>
+                <div class="container chart-section">
+                    <div class="chart-description">
+                      <h3>📶 Altitude Tracking</h3>
+                      <p>
+                        This chart shows each sensor's reported altitude over time compared to the Ground Truth (black line).
+                        Discontinuities or spikes may indicate lost tracking, sensor drift, or latency.
+                        Use this chart to validate the reliability of vertical position detection.
+                      </p>
+                    </div>
+                    <div class="chart-panel">
+                      <div id="altitudeChart"></div>
+                    </div>
                   </div>
                   
-                <div class="chart-panel">
-                <div id="altitudeChart"></div>
-                </div>
-                <div class="container" style="color: white; margin-bottom: 10px;">
-                    <h3>📉 Position Error Analysis</h3>
-                    <p>
-                      Displays how far off each sensor's reported position is from the Ground Truth, measured in meters.
-                      Lower error indicates better tracking performance.
-                      High error values may point to environmental interference or weak signal confidence.
-                    </p>
-                  </div>
-                  
-                <div class="chart-panel">
-                <div id="errorChart"></div>
-                </div>
+                  <div class="container chart-section">
+                    <div class="chart-description">
+                      <h3>📉 Position Error Analysis</h3>
+                      <p>
+                        Displays how far off each sensor's reported position is from the Ground Truth, measured in meters.
+                        Lower error indicates better tracking performance.
+                        High error values may point to environmental interference or weak signal confidence.
+                      </p>
+                    </div>
+                    <div class="chart-panel">
+                      <div id="errorChart"></div>
+                    </div>
+                  </div>                  
             </div>
             <div class="container" style="color: white; margin-bottom: 10px;">
                 <h3>🗺️ Multi-Sensor Flight Path Map</h3>
