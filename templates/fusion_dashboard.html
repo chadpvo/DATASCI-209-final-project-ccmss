@@ -327,22 +327,21 @@
     <div class="time-controls">
         <label for="timeSlider">Timeline:</label>
         <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
+
         <div id="currentTime" class="time-display">Time: Loading...</div>
+        <div class="controls">
+            <label for="sensorFilter">Select Sensor(s):</label>
+            <div id="sensorFilter" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <label><input type="checkbox" value="ALL" checked> All</label>
+            <label><input type="checkbox" value="alvira" checked> ALVIRA</label>
+            <label><input type="checkbox" value="arcus" checked> ARCUS</label>
+            <label><input type="checkbox" value="diana" checked> DIANA</label>
+            <label><input type="checkbox" value="venus" checked> VENUS</label>
+            </div>
+        </div>
     </div>
 
     <div class="page-container">
-        <div class="controls">
-                <label for="sensorFilter">Select Sensor(s):</label>
-                <div id="sensorFilter" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <label><input type="checkbox" value="ALL" checked> All</label>
-                <label><input type="checkbox" value="alvira" checked> ALVIRA</label>
-                <label><input type="checkbox" value="arcus" checked> ARCUS</label>
-                <label><input type="checkbox" value="diana" checked> DIANA</label>
-                <label><input type="checkbox" value="venus" checked> VENUS</label>
-                </div>
-        </div>
-
-            
             <div class="sensor-status">
                 <div class="sensor-card">
                     <h3>🎯 GROUND TRUTH</h3>
