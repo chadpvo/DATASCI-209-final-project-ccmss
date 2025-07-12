@@ -34,7 +34,13 @@
             margin: 0 auto;
             width: 100%;
             box-sizing: border-box;
-            background: rgba(31, 60, 136, 0.85)
+            background: rgba(31, 60, 136, 0.85);
+            border-radius: 15px;
+        }
+        .time-controls label {
+            font-weight: bold;
+            color: #ffffff;
+            min-width: 100px;
         }
 
         .main-visuals {
@@ -94,12 +100,6 @@
             width: 100%;
             outline: 2px solid lime;
         }*/
-        
-        .time-controls label {
-            font-weight: bold;
-            color: #ffffff;
-            min-width: 100px;
-        }
 
         .container {
             width: 100%;
@@ -306,6 +306,24 @@
 </head>
 
 <body>
+
+    <div class="header" style="position: relative;">                        
+        <h1>🛡️ Multi-Sensor Drone Tracking Dashboard</h1>
+        <p>Real-time fusion analysis: Ground Truth vs Multi-Sensor Detection Systems</p>
+        <button onclick="openModal()" style="position: absolute; top: 10px; right: 10px; padding: 10px 15px; border: none; background: #ffffffdd; color: #2c3e50; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            ❓ Instructions
+        </button>
+    </div>
+
+    <div class="container" style="color: white; margin-top: 10px; margin-bottom: 20px;">
+        <h3>🧭 Timeline & Sensor Selection</h3>
+        <p>
+          Scrub through the drone's flight using the timeline slider. Use checkboxes to toggle specific sensors.
+          Ground Truth acts as the benchmark trajectory, while each sensor system reports its own detections.
+          Status cards summarize real-time performance — whether a sensor is active, and if so, its current error or signal level.
+        </p>
+    </div>
+    
     <div class="time-controls">
         <label for="timeSlider">Timeline:</label>
         <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
@@ -313,23 +331,6 @@
     </div>
 
     <div class="page-container">
-        <div class="header" style="position: relative;">                        
-            <h1>🛡️ Multi-Sensor Drone Tracking Dashboard</h1>
-            <p>Real-time fusion analysis: Ground Truth vs Multi-Sensor Detection Systems</p>
-            <button onclick="openModal()" style="position: absolute; top: 10px; right: 10px; padding: 10px 15px; border: none; background: #ffffffdd; color: #2c3e50; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                ❓ Instructions
-            </button>
-        </div>
-
-        <div class="container" style="color: white; margin-top: 10px; margin-bottom: 20px;">
-            <h3>🧭 Timeline & Sensor Selection</h3>
-            <p>
-              Scrub through the drone's flight using the timeline slider. Use checkboxes to toggle specific sensors.
-              Ground Truth acts as the benchmark trajectory, while each sensor system reports its own detections.
-              Status cards summarize real-time performance — whether a sensor is active, and if so, its current error or signal level.
-            </p>
-        </div>
-
         <div class="controls">
                 <label for="sensorFilter">Select Sensor(s):</label>
                 <div id="sensorFilter" style="display: flex; gap: 10px; flex-wrap: wrap;">
