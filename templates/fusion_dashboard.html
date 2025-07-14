@@ -11,13 +11,22 @@
             overflow-y: auto; 
             height: 100%;
         }
+
+        @font-face {
+            font-family: 'TikTok Sans';
+            src: url('TikTokSans.woff2') format('woff2'),
+                url('TikTokSans.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /*font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;*/
+            font-family: 'TikTok Sans', sans-serif;
             margin: 0;
             padding: 20px;
             background: #333;
             /*background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);*/
-            color: #333;
+            color: #c3c2c2;
             min-height: 100vh;
             overflow: visible;
         }
@@ -35,8 +44,9 @@
             margin: 0 auto;
             width: 100%;
             box-sizing: border-box;
-            background: #333;
+            background: #c3c2c2;
             border-radius: 15px;
+            border-color: #c3c2c2;
         }
         .time-controls label {
             font-weight: bold;
