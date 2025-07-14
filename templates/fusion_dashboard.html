@@ -407,7 +407,7 @@
             <div class="charts-grid">
                 <div class="container chart-section">
                     <div class="chart-description">
-                      <h3>📶 Altitude Tracking</h3>
+                      <h3 style = "color:white">📶 Altitude Tracking</h3>
                       <p style = "color:white">
                         This chart shows each sensor's reported altitude over time compared to the Ground Truth (black line).
                         Discontinuities or spikes may indicate lost tracking, sensor drift, or latency.
@@ -421,7 +421,7 @@
                   
                   <div class="container chart-section">
                     <div class="chart-description">
-                      <h3>📉 Position Error Analysis</h3>
+                      <h3 style = "color:white">📉 Position Error Analysis</h3>
                       <p style = "color:white">
                         Displays how far off each sensor's reported position is from the Ground Truth, measured in meters.
                         Lower error indicates better tracking performance.
@@ -435,8 +435,8 @@
             </div>
             <div class="container chart-section">
                 <div class="chart-description">
-                  <h3>🗺️ Multi-Sensor Flight Path Map</h3>
-                  <p>
+                  <h3 style = "color:white">🗺️ Multi-Sensor Flight Path Map</h3>
+                  <p style = "color:white">
                     The map shows live tracking overlays from each sensor versus the Ground Truth flight path.
                     Black represents the known trajectory; other colors represent sensor-reported tracks.
                     Use this to compare spatial alignment and detect location offsets or tracking divergence.
@@ -447,21 +447,15 @@
                 </div>
               </div>              
             </div>
-        </div>
-
-        <div class="container" style="color: white; margin-bottom: 10px;">
-            <h3>📊 Real-Time Sensor Performance</h3>
-            <p>
-              These metrics summarize how well each sensor is performing in terms of detection rate and error.
-              Cards are color-coded: <span style="color:#2ecc71;">green</span> for good, <span style="color:#f39c12;">yellow</span> for warning, and <span style="color:#e74c3c;">red</span> for critical.
-              Values update every 5 seconds to reflect the latest results.
-            </p>
-          </div>
-          
+        </div>       
         
-
         <div class="performance-panel">
             <h2>📊 Real-Time Performance Metrics</h2>
+            <p style="color:white">
+                These metrics summarize how well each sensor is performing in terms of detection rate and error.
+                Cards are color-coded: <span style="color:#2ecc71;">green</span> for good, <span style="color:#f39c12;">yellow</span> for warning, and <span style="color:#e74c3c;">red</span> for critical.
+                Values update every 5 seconds to reflect the latest results.
+              </p>
             <div id="metricsGrid" class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-value">Loading...</div>
