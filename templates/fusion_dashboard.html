@@ -512,11 +512,19 @@
             
             function initializeAltitudeChart() {
                 const layout = {
-                    title: 'Multi-Sensor Altitude Comparison',
+                    /*title: 'Multi-Sensor Altitude Comparison',
                     xaxis: { title: 'Time' },
                     yaxis: { title: 'Altitude (m)' },
                     showlegend: true,
-                    margin: { l: 50, r: 20, b: 50, t: 50 }
+                    margin: { l: 50, r: 20, b: 50, t: 50 }*/
+                    title: 'Multi-Sensor Altitude Comparison',
+                    xaxis: { title: 'Time', color: '#ffffff' },
+                    yaxis: { title: 'Altitude (m)', color: '#ffffff' },
+                    showlegend: true,
+                    margin: { l: 50, r: 20, b: 50, t: 50 },
+                    paper_bgcolor: 'rgba(0,0,0,0)', 
+                    plot_bgcolor: 'rgba(0,0,0,0)',  
+                    font: { color: '#ffffff' }
                 };
                 
                 const traces = [
@@ -531,11 +539,19 @@
             
             function initializeErrorChart() {
                 const layout = {
-                    title: 'Position Error Analysis',
+                    /*title: 'Position Error Analysis',
                     xaxis: { title: 'Time' },
                     yaxis: { title: 'Position Error (m)' },
                     showlegend: true,
-                    margin: { l: 50, r: 20, b: 50, t: 50 }
+                    margin: { l: 50, r: 20, b: 50, t: 50 }*/
+                    title: 'Position Error Analysis',
+                    xaxis: { title: 'Time', color: '#ffffff' },
+                    yaxis: { title: 'Position Error (m)', color: '#ffffff' },
+                    showlegend: true,
+                    margin: { l: 50, r: 20, b: 50, t: 50 },
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#ffffff' }
                 };
                 
                 const traces = [
@@ -558,7 +574,10 @@
                         zoom: 16
                     },
                     margin: { l: 0, r: 0, b: 0, t: 50 },
-                    showlegend: true
+                    showlegend: true,
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#ffffff' }
                 };
                 
                 const traces = [
