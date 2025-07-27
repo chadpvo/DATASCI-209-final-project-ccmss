@@ -53,7 +53,7 @@ def create_flask_app(merged_data):
     @app.route('/')
     def dashboard():
         """Main dashboard route"""
-        images = ['static/bg.png']
+        images = ['bg.png']
         chosen_image = choice(images)
         dashboard_data = display_data.to_dict(orient='records')
         return render_template(
