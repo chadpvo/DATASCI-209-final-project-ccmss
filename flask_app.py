@@ -2,6 +2,7 @@ import sys
 import os
 import pandas as pd
 from multi_processor import MultiSensorDataProcessor
+from random import choice
 
 try:
     data_dir = os.path.abspath("data/src/icmcis-drone-detection/train/train/Scenario_1_1")
