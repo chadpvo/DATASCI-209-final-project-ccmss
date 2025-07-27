@@ -19,7 +19,11 @@
             margin: 0;
             padding: 20px;
             /*background: #333;*/
-            background: url("{{ url_for('static', filename=background_image) }}") no-repeat center center fixed;
+            background: linear-gradient(
+            rgba(0, 0, 0, 0.5),  /* top color with opacity */
+            rgba(0, 0, 0, 0.5)   /* bottom color with opacity */
+            ),
+            url("{{ url_for('static', filename=background_image) }}") no-repeat center center fixed;
             background-size: cover;
             /*background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);*/
             color: #c3c2c2;
