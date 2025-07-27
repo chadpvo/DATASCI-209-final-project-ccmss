@@ -18,7 +18,9 @@
             font-family: 'Urbanist', sans-serif;
             margin: 0;
             padding: 20px;
-            background: #333;
+            /*background: #333;*/
+            background: url("{{ url_for('static', filename='images/bg1.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
             /*background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);*/
             color: #c3c2c2;
             min-height: 100vh;
@@ -352,6 +354,30 @@
             ❓ Instructions
         </button>
     </div>
+
+    <div class="container" style="color: white; margin-top: 20px; margin-bottom: 30px;">
+        <h2>Introduction</h2>
+        <p>
+          As drones become more common—whether for recreation, commercial use, or more serious threats—detecting, tracking, and classifying them accurately has become essential for airspace safety. From civilian airports to military zones, the ability to identify drones quickly can prevent disruption or danger. To support NATO’s efforts to protect against the misuse of drones, this dashboard explores how various sensors perform in real-world tracking scenarios. As you scroll, you'll see how different systems compare, revealing which methods are most effective for maintaining secure skies.
+        </p>
+      
+        <h2>The Data</h2>
+        <p>
+          The dataset includes timestamps, latitude and longitude (from radar sensors ALVIRA and ARCUS), and bearing, which represents the direction from the sensor to the signal source (as reported by RF sensors DIANA and VENUS). The data was provided by NATO as a set of comma-separated files, organized by drone and flight scenario. For better comparison, this analysis focuses on single-target tracking.
+        </p>
+      
+        <h2>Radar / RF Sensors</h2>
+        <p>
+          Meet our four sensors: <strong>ALVIRA</strong>, <strong>ARCUS</strong>, <strong>DIANA</strong>, and <strong>VENUS</strong>. Despite their human names, these sensors have highly technical, even superhuman, capabilities:
+        </p>
+        <ul>
+          <li><strong>ALVIRA</strong> — 2D radar providing range and bearing info. Located at 51.5213°N, 5.8586°E.</li>
+          <li><strong>ARCUS</strong> — 3D radar capable of altitude differentiation. Located at 51.5215°N, 5.8706°E.</li>
+          <li><strong>DIANA</strong> — RF direction-finding sensor with a 180° view. Located at 51.5191°N, 5.8580°E.</li>
+          <li><strong>VENUS</strong> — RF direction-finding sensor with a 360° view. Located at 51.5193°N, 5.8579°E.</li>
+        </ul>
+      </div>
+      
 
     <div class="container" style="color: white; margin-top: 10px; margin-bottom: 20px;">
         <h3>🧭 Timeline & Sensor Selection</h3>

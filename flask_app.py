@@ -53,17 +53,26 @@ def create_flask_app(merged_data):
     @app.route('/')
     def dashboard():
         """Main dashboard route"""
-        try:
+        images = ['static/bg.png']
+        chosen_image = choice(images)
+        dashboard_data = display_data.to_dict(orient='records')
+        return render_template(
+            'fusion_dashboard.html',
+            drone_data_json=json.dumps(dashboard_data),
+            background_image=chosen_image,
+            **bounds
+        )
+        #try:
             # Convert data to JSON for frontend
-            dashboard_data = display_data.to_dict(orient='records')
+        #    dashboard_data = display_data.to_dict(orient='records')
             
-            return render_template(
-                'fusion_dashboard.html',
-                drone_data_json=json.dumps(dashboard_data),
-                **bounds
-            )
-        except Exception as e:
-            return f"<h1>Dashboard Error</h1><p>Error loading dashboard: {e}</p>"
+        #    return render_template(
+        #        'fusion_dashboard.html',
+        #        drone_data_json=json.dumps(dashboard_data),
+        #        **bounds
+        #    )
+        #except Exception as e:
+        #    return f"<h1>Dashboard Error</h1><p>Error loading dashboard: {e}</p>"*/
     
     @app.route('/api/performance_metrics')
     def get_performance_metrics():
