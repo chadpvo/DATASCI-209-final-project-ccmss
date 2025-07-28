@@ -536,7 +536,7 @@
             
             // Sensor colors for consistent visualization
             const SENSOR_COLORS = {
-                ground_truth: '#2c3e50',
+                ground_truth: '#FFD700',
                 alvira: '#e74c3c',
                 arcus: '#3498db',
                 diana: '#f39c12',
@@ -606,12 +606,12 @@
                     yaxis: { title: 'Position Error (m)', color: '#ffffff', gridcolor: 'rgba(255,255,255,0.1)' },
                     showlegend: true,   
                     legend: {
-                        orientation: 'h',   // horizontal legend
+                        orientation: 'h',   
                         yanchor: 'top',
-                        y: -0.2,            // move below the chart
+                        y: -0.2,            
                         xanchor: 'center',
                         x: 0.5,
-                        itemclick: false,   // prevent filtering
+                        itemclick: false,  
                         itemdoubleclick: false
                     },
                     margin: { l: 50, r: 20, b: 50, t: 50 },
@@ -637,17 +637,17 @@
                             lat: ({{ min_latitude }} + {{ max_latitude }}) / 2, 
                             lon: ({{ min_longitude }} + {{ max_longitude }}) / 2 
                         },
-                        zoom: 16
+                        zoom: 8
                     },
                     margin: { l: 0, r: 0, b: 0, t: 50 },
                     showlegend: true,   
                     legend: {
-                        orientation: 'h',   // horizontal legend
+                        orientation: 'h',   
                         yanchor: 'top',
-                        y: -0.2,            // move below the chart
+                        y: -0.2,            
                         xanchor: 'center',
                         x: 0.5,
-                        itemclick: false,   // prevent filtering
+                        itemclick: false,   
                         itemdoubleclick: false
                     },
                     paper_bgcolor: 'rgba(255,255,255,0.05)',
