@@ -906,22 +906,26 @@
             const allCheckbox = document.querySelector('#sensorFilter input[value="ALL"]');
             const individualCheckboxes = Array.from(document.querySelectorAll('#sensorFilter input:not([value="ALL"])'));
 
-            document.querySelectorAll('#sensorFilter input').forEach(cb => {
-                cb.addEventListener('change', () => {
-                    const selected = individualCheckboxes.filter(c => c.checked);
-
-                    if (cb.value === "ALL") {
-                        if (cb.checked) {
-                            individualCheckboxes.forEach(c => c.checked = true);
-                        }
-                    } else {
-                        allCheckbox.checked = selected.length === individualCheckboxes.length;
-                    }
-
-                    // Refresh current view
-                    updatePlots(parseInt(timeSlider.value));
-                });
+            allCheckbox.addEventListener('change', () => {
+            if (allCheckbox.checked) {
+                // ✅ If All is checked → select all
+                individualCheckboxes.forEach(c => c.checked = true);
+            } else {
+                // ✅ If All is unchecked → unselect everything
+                individualCheckboxes.forEach(c => c.checked = false);
+            }
+            updatePlots(parseInt(timeSlider.value)); // refresh visuals
             });
+
+            // For individual checkboxes
+            individualCheckboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                // ✅ Keep All in sync with individuals
+                allCheckbox.checked = individualCheckboxes.every(c => c.checked);
+                updatePlots(parseInt(timeSlider.value)); // refresh visuals
+            });
+            });
+
 
             
             // Keyboard controls for better navigation
