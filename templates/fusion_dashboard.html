@@ -46,7 +46,8 @@
             box-sizing: border-box;
             background: #333;
             border-radius: 15px;
-            border: 2px solid white
+            border: 2px solid white;
+            flex-wrap: wrap;  /* ✅ Add this */
         }
         .time-controls label {
             font-weight: bold;
@@ -358,25 +359,28 @@
             padding: 0 16px;
         }
 
+
         .scenario-selector {
-            background: #333;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 2px solid white;
-            text-align: center;
-            max-width: min(95vw, 1600px);
-            margin: 20px auto;
-            box-sizing: border-box;
+            flex: 0 0 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
         }
+
+        .scenario-selector label {
+            font-weight: bold;
+            color: white;
+        }
+
         .scenario-buttons {
             display: flex;
             gap: 10px;
-            justify-content: center;
             flex-wrap: wrap;
         }
+
         .scenario-btn {
-            padding: 10px 20px;
+            padding: 6px 14px;
             border: 2px solid #337ab7;
             background: transparent;
             color: #337ab7;
@@ -384,8 +388,9 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 0.85em;
         }
+
         .scenario-btn:hover,
         .scenario-btn.active {
             background: #337ab7;
