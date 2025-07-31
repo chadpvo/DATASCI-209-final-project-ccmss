@@ -358,6 +358,41 @@
             padding: 0 16px;
         }
 
+        .scenario-selector {
+            background: #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid white;
+            text-align: center;
+            max-width: min(95vw, 1600px);
+            margin: 20px auto;
+            box-sizing: border-box;
+        }
+        .scenario-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .scenario-btn {
+            padding: 10px 20px;
+            border: 2px solid #337ab7;
+            background: transparent;
+            color: #337ab7;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .scenario-btn:hover,
+        .scenario-btn.active {
+            background: #337ab7;
+            color: white;
+        }
+
+
         @media (max-width: 1200px) {
             .charts-grid {
                 grid-template-columns: 1fr;
@@ -437,6 +472,17 @@
               <label><input type="checkbox" value="venus" checked> VENUS</label>
           </div>
         </div>
+
+        <!-- Scenario Selector -->
+        <div class="scenario-selector">
+            <h3>📁 Select Flight Scenario</h3>
+            <div class="scenario-buttons">
+                <button class="scenario-btn active" onclick="switchScenario('scenario_1')">Scenario 1</button>
+                <button class="scenario-btn" onclick="switchScenario('scenario_2')">Scenario 2</button>
+                <button class="scenario-btn" onclick="switchScenario('scenario_3')">Scenario 3</button>
+            </div>
+        </div>
+
       </div>
       
 
@@ -529,6 +575,9 @@
         </div>
           
         <script>
+
+            let currentScenario = "{{ current_scenario }}";
+
             // Data from Flask
             const droneData = {{ drone_data_json | safe }};
             const timeSlider = document.getElementById('timeSlider');
@@ -923,6 +972,21 @@
                     });
             }
             
+            function switchScenario(scenarioName) {
+                console.log(`(Simulated) Switch to scenario: ${scenarioName}`);
+
+                // Update the active button styling
+                document.querySelectorAll('.scenario-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[onclick="switchScenario('${scenarioName}')"]`).classList.add('active');
+
+                // Optional: show a toast or alert
+                alert(`Scenario switch is not available yet.\nShowing default data for "${scenarioName}".`);
+            }
+
+
+
             // Event listeners
             timeSlider.addEventListener('input', (event) => {
                 const selectedIndex = parseInt(event.target.value);
