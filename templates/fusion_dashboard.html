@@ -47,19 +47,12 @@
             background: #333;
             border-radius: 15px;
             border: 2px solid white;
-            /*flex-wrap: wrap;  */
-            flex-direction: column;
+            flex-wrap: wrap
         }
         .time-controls label {
             font-weight: bold;
             color: #ffffff;
             min-width: 100px;
-        }
-
-        .time-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
         }
 
         .main-visuals {
@@ -197,14 +190,15 @@
             text-align: center;
         }
         .time-slider-container {
-            flex: 0 0 60%;
+            flex: 1 1 40%;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
+            min-width: 300px;
         }
 
         .sensor-controls {
-            flex: 0 0 40%;
+            flex: 1 1 30%;
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -368,11 +362,11 @@
 
 
         .scenario-selector {
-            /*flex: 0 0 100%;*/
+            flex: 1 1 30%;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 5px;
+            min-width: 250px;
         }
 
         .scenario-selector label {
@@ -483,26 +477,23 @@
     </div>
     
     <div class="time-controls">
-        <div class = "time-row">
-            <div class="time-slider-container">
-                <label for="timeSlider">Timeline:</label>
-                <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
-                <div id="currentTime" class="time-display">Time: Loading...</div>
-            </div>
+        <div class="time-slider-container">
+            <label for="timeSlider">Timeline:</label>
+            <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
+            <div id="currentTime" class="time-display">Time: Loading...</div>
+        </div>
         
-            <div class="sensor-controls">
-                <label for="sensorFilter">Select Sensor(s):</label>
-                <div id="sensorFilter">
-                    <label><input type="checkbox" value="ALL" checked> All</label>
-                    <label><input type="checkbox" value="alvira" checked> ALVIRA</label>
-                    <label><input type="checkbox" value="arcus" checked> ARCUS</label>
-                    <label><input type="checkbox" value="diana" checked> DIANA</label>
-                    <label><input type="checkbox" value="venus" checked> VENUS</label>
-                </div>
+        <div class="sensor-controls">
+            <label for="sensorFilter">Select Sensor(s):</label>
+            <div id="sensorFilter">
+                <label><input type="checkbox" value="ALL" checked> All</label>
+                <label><input type="checkbox" value="alvira" checked> ALVIRA</label>
+                <label><input type="checkbox" value="arcus" checked> ARCUS</label>
+                <label><input type="checkbox" value="diana" checked> DIANA</label>
+                <label><input type="checkbox" value="venus" checked> VENUS</label>
             </div>
         </div>
-
-        <!-- Scenario Selector -->
+            <!-- Scenario Selector -->
         <div class="scenario-selector">
             <h3>📁 Select Flight Scenario</h3>
             <div class="scenario-buttons">
@@ -511,8 +502,7 @@
                 <button class="scenario-btn" onclick="switchScenario('scenario_3')">Scenario 3</button>
             </div>
         </div>
-
-      </div>
+    </div>
       
 
     <div class="page-container">
