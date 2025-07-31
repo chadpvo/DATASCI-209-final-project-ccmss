@@ -47,12 +47,19 @@
             background: #333;
             border-radius: 15px;
             border: 2px solid white;
-            flex-wrap: wrap;  /* ✅ Add this */
+            /*flex-wrap: wrap;  */
+            flex-direction: column;
         }
         .time-controls label {
             font-weight: bold;
             color: #ffffff;
             min-width: 100px;
+        }
+
+        .time-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .main-visuals {
@@ -190,14 +197,14 @@
             text-align: center;
         }
         .time-slider-container {
-            flex: 0 0 70%;
+            flex: 0 0 60%;
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
         .sensor-controls {
-            flex: 0 0 30%;
+            flex: 0 0 40%;
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -361,7 +368,7 @@
 
 
         .scenario-selector {
-            flex: 0 0 100%;
+            /*flex: 0 0 100%;*/
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -414,6 +421,21 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        @media (max-width: 768px) {
+            .time-row {
+                flex-direction: column;
+            }
+
+            .time-slider-container,
+            .sensor-controls {
+                flex: 1 1 100%;
+            }
+
+            .scenario-buttons {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 
@@ -461,21 +483,23 @@
     </div>
     
     <div class="time-controls">
-        <div class="time-slider-container">
-          <label for="timeSlider">Timeline:</label>
-          <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
-          <div id="currentTime" class="time-display">Time: Loading...</div>
-        </div>
-      
-        <div class="sensor-controls">
-          <label for="sensorFilter">Select Sensor(s):</label>
-          <div id="sensorFilter">
-              <label><input type="checkbox" value="ALL" checked> All</label>
-              <label><input type="checkbox" value="alvira" checked> ALVIRA</label>
-              <label><input type="checkbox" value="arcus" checked> ARCUS</label>
-              <label><input type="checkbox" value="diana" checked> DIANA</label>
-              <label><input type="checkbox" value="venus" checked> VENUS</label>
-          </div>
+        <div class = "time-row"
+            <div class="time-slider-container">
+            <label for="timeSlider">Timeline:</label>
+            <input type="range" id="timeSlider" class="time-slider" min="0" max="{{ total_frames - 1 }}" value="0">
+            <div id="currentTime" class="time-display">Time: Loading...</div>
+            </div>
+        
+            <div class="sensor-controls">
+            <label for="sensorFilter">Select Sensor(s):</label>
+            <div id="sensorFilter">
+                <label><input type="checkbox" value="ALL" checked> All</label>
+                <label><input type="checkbox" value="alvira" checked> ALVIRA</label>
+                <label><input type="checkbox" value="arcus" checked> ARCUS</label>
+                <label><input type="checkbox" value="diana" checked> DIANA</label>
+                <label><input type="checkbox" value="venus" checked> VENUS</label>
+            </div>
+            </div>
         </div>
 
         <!-- Scenario Selector -->
