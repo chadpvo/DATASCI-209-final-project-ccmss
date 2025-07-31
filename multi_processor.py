@@ -7,6 +7,7 @@ import threading
 import time
 import webbrowser
 from datetime import datetime
+from merger import merge_sensor_data as standard_merge
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -66,6 +67,17 @@ class MultiSensorDataProcessor:
             print("No sensor data files found")
             return False
 
+    def merge_sensor_data(self):
+        """Use standard merge from shared module"""
+        if self.ground_truth is None:
+            print("No ground truth loaded")
+            return None
+
+        merged = standard_merge(self.ground_truth, self.sensor_data)
+        self.merged_data = merged
+        return merged
+
+'''
     def merge_sensor_data(self):
         """Merge all sensor data with ground truth using time alignment"""
         if self.ground_truth is None:
@@ -208,8 +220,8 @@ class MultiSensorDataProcessor:
         print(f"\nSensor data fusion complete!")
         print(f"Final dataset: {len(merged):,} synchronized records")
         self.print_performance_summary()
-        return merged
-
+        return merged 
+'''
     def print_performance_summary(self):
         if self.merged_data is None:
             return
