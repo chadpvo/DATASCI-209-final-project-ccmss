@@ -77,6 +77,53 @@ class MultiSensorDataProcessor:
         self.merged_data = merged
         return merged
 
+    def print_performance_summary(self):
+        if self.merged_data is None:
+            return
+
+        print("\n" + "="*60)
+        print("SENSOR PERFORMANCE SUMMARY")
+        print("="*60)
+
+        total_records = len(self.merged_data)
+        time_span = (self.merged_data['datetime(utc)'].max() - self.merged_data['datetime(utc)'].min()).total_seconds() / 60
+        print(f"Total Records: {total_records:,}")
+        print(f"Time Span: {time_span:.1f} minutes")
+
+        if 'alvira_pos_error_m' in self.merged_data.columns:
+            alvira_valid = self.merged_data.dropna(subset=['alvira_pos_error_m'])
+            if len(alvira_valid) > 0:
+                print(f"\nALVIRA (2D Radar):")
+                print(f"   Detection Rate:      {len(alvira_valid)/total_records*100:.1f}% ({len(alvira_valid):,} detections)")
+                print(f"   Avg Position Error:  {alvira_valid['alvira_pos_error_m'].mean():.1f} ± {alvira_valid['alvira_pos_error_m'].std():.1f} m")
+                print(f"   Max Position Error:  {alvira_valid['alvira_pos_error_m'].max():.1f} m")
+                print(f"   Avg Altitude Error:  {alvira_valid['alvira_alt_error_m'].mean():.1f} m")
+
+        if 'arcus_pos_error_m' in self.merged_data.columns:
+            arcus_valid = self.merged_data.dropna(subset=['arcus_pos_error_m'])
+            if len(arcus_valid) > 0:
+                print(f"\nARCUS (3D Radar):")
+                print(f"   Detection Rate:      {len(arcus_valid)/total_records*100:.1f}% ({len(arcus_valid):,} detections)")
+                print(f"   Avg Position Error:  {arcus_valid['arcus_pos_error_m'].mean():.1f} ± {arcus_valid['arcus_pos_error_m'].std():.1f} m")
+                print(f"   Max Position Error:  {arcus_valid['arcus_pos_error_m'].max():.1f} m")
+                print(f"   Avg Altitude Error:  {arcus_valid['arcus_alt_error_m'].mean():.1f} m")
+
+        if 'diana_snr' in self.merged_data.columns:
+            diana_valid = self.merged_data.dropna(subset=['diana_snr'])
+            if len(diana_valid) > 0:
+                print(f"\nDIANA (RF Direction Finding):")
+                print(f"   Detection Rate:      {len(diana_valid)/total_records*100:.1f}% ({len(diana_valid):,} detections)")
+                print(f"   Avg SNR:            {diana_valid['diana_snr'].mean():.1f} dB")
+                if 'diana_range' in diana_valid.columns:
+                    print(f"   Max Range:          {diana_valid['diana_range'].max():.0f} m")
+
+        if 'venus_frequency' in self.merged_data.columns:
+            venus_valid = self.merged_data.dropna(subset=['venus_frequency'])
+            if len(venus_valid) > 0:
+                print(f"\nVENUS (RF Direction Finding):")
+                print(f"   Detection Rate:      {len(venus_valid)/total_records*100:.1f}% ({len(venus_valid):,} detections)")
+                print(f"   Avg Frequency:      {venus_valid['venus_frequency'].mean()/1e6:.0f} MHz")
+
 '''
     def merge_sensor_data(self):
         """Merge all sensor data with ground truth using time alignment"""
@@ -220,51 +267,4 @@ class MultiSensorDataProcessor:
         print(f"\nSensor data fusion complete!")
         print(f"Final dataset: {len(merged):,} synchronized records")
         self.print_performance_summary()
-        return merged 
-'''
-    def print_performance_summary(self):
-        if self.merged_data is None:
-            return
-
-        print("\n" + "="*60)
-        print("SENSOR PERFORMANCE SUMMARY")
-        print("="*60)
-
-        total_records = len(self.merged_data)
-        time_span = (self.merged_data['datetime(utc)'].max() - self.merged_data['datetime(utc)'].min()).total_seconds() / 60
-        print(f"Total Records: {total_records:,}")
-        print(f"Time Span: {time_span:.1f} minutes")
-
-        if 'alvira_pos_error_m' in self.merged_data.columns:
-            alvira_valid = self.merged_data.dropna(subset=['alvira_pos_error_m'])
-            if len(alvira_valid) > 0:
-                print(f"\nALVIRA (2D Radar):")
-                print(f"   Detection Rate:      {len(alvira_valid)/total_records*100:.1f}% ({len(alvira_valid):,} detections)")
-                print(f"   Avg Position Error:  {alvira_valid['alvira_pos_error_m'].mean():.1f} ± {alvira_valid['alvira_pos_error_m'].std():.1f} m")
-                print(f"   Max Position Error:  {alvira_valid['alvira_pos_error_m'].max():.1f} m")
-                print(f"   Avg Altitude Error:  {alvira_valid['alvira_alt_error_m'].mean():.1f} m")
-
-        if 'arcus_pos_error_m' in self.merged_data.columns:
-            arcus_valid = self.merged_data.dropna(subset=['arcus_pos_error_m'])
-            if len(arcus_valid) > 0:
-                print(f"\nARCUS (3D Radar):")
-                print(f"   Detection Rate:      {len(arcus_valid)/total_records*100:.1f}% ({len(arcus_valid):,} detections)")
-                print(f"   Avg Position Error:  {arcus_valid['arcus_pos_error_m'].mean():.1f} ± {arcus_valid['arcus_pos_error_m'].std():.1f} m")
-                print(f"   Max Position Error:  {arcus_valid['arcus_pos_error_m'].max():.1f} m")
-                print(f"   Avg Altitude Error:  {arcus_valid['arcus_alt_error_m'].mean():.1f} m")
-
-        if 'diana_snr' in self.merged_data.columns:
-            diana_valid = self.merged_data.dropna(subset=['diana_snr'])
-            if len(diana_valid) > 0:
-                print(f"\nDIANA (RF Direction Finding):")
-                print(f"   Detection Rate:      {len(diana_valid)/total_records*100:.1f}% ({len(diana_valid):,} detections)")
-                print(f"   Avg SNR:            {diana_valid['diana_snr'].mean():.1f} dB")
-                if 'diana_range' in diana_valid.columns:
-                    print(f"   Max Range:          {diana_valid['diana_range'].max():.0f} m")
-
-        if 'venus_frequency' in self.merged_data.columns:
-            venus_valid = self.merged_data.dropna(subset=['venus_frequency'])
-            if len(venus_valid) > 0:
-                print(f"\nVENUS (RF Direction Finding):")
-                print(f"   Detection Rate:      {len(venus_valid)/total_records*100:.1f}% ({len(venus_valid):,} detections)")
-                print(f"   Avg Frequency:      {venus_valid['venus_frequency'].mean()/1e6:.0f} MHz")
+        return merged '''
