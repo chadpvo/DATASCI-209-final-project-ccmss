@@ -84,7 +84,7 @@ def merge_sensor_data(ground_truth, sensor_data):
         if 'arcus_latitude' in merged.columns:
             calculate_positional_error(merged, 'arcus')
 
-    # DIANA
+    #DIANA
     diana = sensor_data.get('DIANA')
     if diana is not None:
         diana_cols = {
@@ -96,7 +96,7 @@ def merge_sensor_data(ground_truth, sensor_data):
         }
         safe_merge('DIANA', diana, diana_cols, '10s')
 
-    # VENUS
+    #VENUS
     venus = sensor_data.get('VENUS')
     if venus is not None:
         venus_cols = {
