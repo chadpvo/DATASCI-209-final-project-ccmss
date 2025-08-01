@@ -496,14 +496,18 @@
             <!-- Scenario Selector -->
         <div class="scenario-selector">
             <h3>📁 Select Flight Scenario</h3>
-            <div class="scenario-buttons">
-                <button class="scenario-btn active" onclick="switchScenario('scenario_1')">Scenario 1</button>
-                <button class="scenario-btn" onclick="switchScenario('scenario_2')">Scenario 2</button>
-                <button class="scenario-btn" onclick="switchScenario('scenario_3')">Scenario 3</button>
-            </div>
+            <div class="scenario-buttons" style="margin: 10px 0;">
+                {% for scenario in scenarios %}
+                  <button class="scenario-btn {% if scenario == current_scenario %}active{% endif %}"
+                          onclick="switchScenario('{{ scenario }}')">
+                    {{ scenario.replace('_', ' ').title() }}
+                  </button>
+                {% endfor %}
+              </div>              
         </div>
     </div>
       
+    <div id="performanceMetrics"></div>
 
     <div class="page-container">
             <div class="sensor-status">
@@ -846,6 +850,29 @@
 
             updateSensorStatus(currentPoint);}
 
+            function updatePerformanceMetrics() {
+                fetch('/api/performance_metrics')
+                .then(res => res.json())
+                .then(metrics => {
+                    const performanceMetricsDiv = document.getElementById('performanceMetrics');
+                    if (!performanceMetricsDiv) return;
+
+                    let html = '';
+                    for (const [sensor, values] of Object.entries(metrics)) {
+                        html += `<div class="metric-box"><strong>${sensor.toUpperCase()}</strong><br>`;
+                        for (const [key, val] of Object.entries(values)) {
+                            html += `${key.replaceAll('_', ' ')}: ${typeof val === 'number' ? val.toFixed(2) : val}<br>`;
+                        }
+                        html += `</div>`;
+                    }
+                    performanceMetricsDiv.innerHTML = html;
+                })
+                .catch(err => {
+                    console.error("Performance metrics fetch failed:", err);
+                });
+            }
+
+
             function updateSensorStatus(currentPoint) {
                 // ALVIRA status
                 const alviraStatus = document.getElementById('alviraStatus');
@@ -992,17 +1019,34 @@
             }
             
             function switchScenario(scenarioName) {
-                console.log(`(Simulated) Switch to scenario: ${scenarioName}`);
+                fetch('/api/switch_scenario', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scenario: scenarioName })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        currentScenario = scenarioName;
+                        updatePerformanceMetrics();
+                        updatePlots(0);
 
-                // Update the active button styling
-                document.querySelectorAll('.scenario-btn').forEach(btn => {
-                    btn.classList.remove('active');
+                        // Update button styles
+                        document.querySelectorAll('.scenario-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        const activeBtn = document.querySelector(`[onclick="switchScenario('${scenarioName}')"]`);
+                        if (activeBtn) activeBtn.classList.add('active');
+                    } else {
+                        alert(`Error: ${data.error}`);
+                    }
+                })
+                .catch(err => {
+                    console.error("Switch scenario error:", err);
+                    alert("Failed to switch scenario.");
                 });
-                document.querySelector(`[onclick="switchScenario('${scenarioName}')"]`).classList.add('active');
-
-                // Optional: show a toast or alert
-                alert(`Scenario switch is not available yet.\nShowing default data for "${scenarioName}".`);
             }
+
 
 
 
