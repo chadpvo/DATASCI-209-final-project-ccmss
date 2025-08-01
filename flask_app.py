@@ -14,10 +14,17 @@ if not available_scenarios:
     sys.exit(1)
 
 # Load first scenario by default
-current_scenario = available_scenarios[0]
+# current_scenario = available_scenarios[0]
+
+# Load first scenario by default using a mutable container
+state = {
+    "current_scenario": available_scenarios[0]
+}
+
 
 try:
-    scenario_path = os.path.join(SCENARIO_BASE_PATH, current_scenario)
+    #scenario_path = os.path.join(SCENARIO_BASE_PATH, current_scenario)
+    scenario_path = os.path.join(SCENARIO_BASE_PATH, state["current_scenario"])
     processor = MultiSensorDataProcessor(scenario_path)
     if not processor.load_all_data():
         raise RuntimeError("Loading sensor data failed.")
@@ -62,14 +69,15 @@ def create_flask_app(merged_data):
             'fusion_dashboard.html',
             drone_data_json=drone_data_json,
             background_image=chosen_image,
-            current_scenario=current_scenario,
+            current_scenario=state["current_scenario"],
+            #current_scenario=current_scenario,
             scenarios=available_scenarios,
             **bounds
         )
 
     @app.route('/api/switch_scenario', methods=['POST'])
     def switch_scenario():
-        nonlocal display_data, bounds, current_scenario
+        #nonlocal display_data, bounds, current_scenario
         try:
             data = request.get_json()
             new_scenario = data.get('scenario')
@@ -87,7 +95,8 @@ def create_flask_app(merged_data):
             new_data['datetime(utc)'] = new_data['datetime(utc)'].dt.strftime('%Y-%m-%d %H:%M:%S.%f')
             display_data = new_data
             bounds = compute_bounds(display_data)
-            current_scenario = new_scenario
+            # current_scenario = new_scenario
+            state["current_scenario"] = new_scenario
             return jsonify({'success': True, 'message': f'Switched to {new_scenario}', 'bounds': bounds})
         except Exception as e:
             return jsonify({'success': False, 'error': str(e)}), 500
@@ -145,7 +154,8 @@ def create_flask_app(merged_data):
     def get_status():
         return jsonify({
             "status": "active",
-            "current_scenario": current_scenario,
+            #"current_scenario": current_scenario,
+            "current_scenario": state["current_scenario"],
             "total_records": len(display_data),
             "sensors_active": len([col for col in display_data.columns if any(sensor in col for sensor in ['alvira', 'arcus', 'diana', 'venus'])]),
             "time_range": f"{bounds['min_time']} to {bounds['max_time']}"
