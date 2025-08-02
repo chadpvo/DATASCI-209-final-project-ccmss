@@ -95,6 +95,12 @@ def create_flask_app(merged_data):
             print(f"Path: {new_path}")
 
             processor = MultiSensorDataProcessor(new_path)
+            print(f"[DEBUG] Switching to scenario: {new_scenario}")
+            try:
+                print(f"[DEBUG] Files in {new_path}: {os.listdir(new_path)}")
+            except Exception as e:
+                print(f"[ERROR] Failed to list files in {new_path}: {e}")
+
             if not processor.load_all_data():
                 return jsonify({'success': False, 'error': 'Failed to load data'}), 500
             new_data = processor.merge_sensor_data()
