@@ -39,6 +39,8 @@ except Exception as e:
 def create_flask_app(merged_data):
     from flask import Flask, render_template, jsonify, request
     import json
+    import traceback
+
 
     app = Flask(__name__)
     display_data = merged_data.copy()
@@ -106,6 +108,9 @@ def create_flask_app(merged_data):
             state["current_scenario"] = new_scenario
             return jsonify({'success': True, 'message': f'Switched to {new_scenario}', 'bounds': bounds})
         except Exception as e:
+            #return jsonify({'success': False, 'error': str(e)}), 500
+            print("[ERROR] Exception in switch_scenario:")
+            traceback.print_exc()  # This logs full stack trace to terminal
             return jsonify({'success': False, 'error': str(e)}), 500
 
     @app.route('/api/performance_metrics')
