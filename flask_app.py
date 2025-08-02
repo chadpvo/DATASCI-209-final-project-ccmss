@@ -81,14 +81,17 @@ def create_flask_app(merged_data):
         try:
             data = request.get_json()
             new_scenario = data.get('scenario')
+            print(f"[DEBUG] Requested switch to scenario: {new_scenario}")
             if new_scenario not in available_scenarios:
                 return jsonify({'success': False, 'error': 'Scenario not found'}), 400
 
             new_path = os.path.join(SCENARIO_BASE_PATH, new_scenario)
+            print(f"[DEBUG] Scenario folder path: {new_path}")
+            print(f"[DEBUG] Files found in {new_path}: {os.listdir(new_path)}")
 
             print(f"Switching to scenario: {new_scenario}")
             print(f"Path: {new_path}")
-            
+
             processor = MultiSensorDataProcessor(new_path)
             if not processor.load_all_data():
                 return jsonify({'success': False, 'error': 'Failed to load data'}), 500
