@@ -9,6 +9,161 @@ import webbrowser
 from datetime import datetime
 from merger import merge_sensor_data as standard_merge
 import warnings
+import glob  # ✅ Added for ground truth detection
+warnings.filterwarnings('ignore')
+
+class MultiSensorDataProcessor:
+    def __init__(self, data_dir):
+        self.data_dir = data_dir
+        self.ground_truth = None
+        self.sensor_data = {}
+        self.merged_data = None
+
+    def find_ground_truth_file(self):
+        """Find ground truth file with various naming patterns"""
+        patterns = ["*_v2.csv", "*corrected.csv", "*Airdata*.csv"]
+        gt_files = []
+        for pattern in patterns:
+            gt_files.extend(glob.glob(os.path.join(self.data_dir, pattern)))
+
+        # Filter out known sensor files
+        sensor_keywords = ['ALVIRA', 'ARCUS', 'DIANA', 'VENUS']
+        gt_files = [f for f in gt_files if not any(sensor in f for sensor in sensor_keywords)]
+
+        if gt_files:
+            print(f"[INFO] Ground truth file(s) found: {[os.path.basename(f) for f in gt_files]}")
+            return gt_files[0]  # Return first match
+        else:
+            print("[ERROR] No ground truth file matched the expected patterns.")
+            return None
+
+    def load_all_data(self):
+        """Load all sensor data files"""
+        print("Loading multi-sensor drone detection data...")
+
+        print(f"[DEBUG] Looking for files in: {self.data_dir}")
+        try:
+            print(f"[DEBUG] Directory contents: {os.listdir(self.data_dir)}")
+        except Exception as e:
+            print(f"[DEBUG] Could not list directory: {e}")
+            return False
+
+        # Ground truth auto-detection
+        gt_file = self.find_ground_truth_file()
+        if gt_file and os.path.exists(gt_file):
+            try:
+                self.ground_truth = pd.read_csv(gt_file)
+                self.ground_truth['datetime(utc)'] = pd.to_datetime(self.ground_truth['datetime(utc)'])
+                print(f"Ground truth loaded: {len(self.ground_truth):,} records from {os.path.basename(gt_file)}")
+            except Exception as e:
+                print(f"[ERROR] Failed to load ground truth: {e}")
+                return False
+        else:
+            print(f"[ERROR] Ground truth file not found or unreadable.")
+            return False
+
+        # Define expected sensor files (still static)
+        files_to_load = {
+            'ALVIRA': 'ALVIRA_scenario.csv',
+            'ARCUS': 'ARCUS_scenario.csv',
+            'DIANA': 'DIANA_scenario.csv',
+            'VENUS': 'VENUS_scenario.csv'
+        }
+
+        # Load sensor data
+        sensors_loaded = 0
+        for sensor_name, filename in files_to_load.items():
+            filepath = os.path.join(self.data_dir, filename)
+            if os.path.exists(filepath):
+                try:
+                    df = pd.read_csv(filepath)
+                    df['datetime(utc)'] = pd.to_datetime(df['datetime(utc)'])
+                    self.sensor_data[sensor_name] = df
+                    sensors_loaded += 1
+                    print(f"{sensor_name} loaded: {len(df):,} records")
+                except Exception as e:
+                    print(f"Error loading {sensor_name}: {e}")
+            else:
+                print(f"{sensor_name} file not found: {filepath}")
+
+        if sensors_loaded > 0:
+            print(f"\nSuccessfully loaded {sensors_loaded} sensor datasets!")
+            return True
+        else:
+            print("No sensor data files found")
+            return False
+
+    def merge_sensor_data(self):
+        """Use standard merge from shared module"""
+        if self.ground_truth is None:
+            print("No ground truth loaded")
+            return None
+
+        merged = standard_merge(self.ground_truth, self.sensor_data)
+        self.merged_data = merged
+        return merged
+
+    def print_performance_summary(self):
+        if self.merged_data is None:
+            return
+
+        print("\n" + "="*60)
+        print("SENSOR PERFORMANCE SUMMARY")
+        print("="*60)
+
+        total_records = len(self.merged_data)
+        time_span = (self.merged_data['datetime(utc)'].max() - self.merged_data['datetime(utc)'].min()).total_seconds() / 60
+        print(f"Total Records: {total_records:,}")
+        print(f"Time Span: {time_span:.1f} minutes")
+
+        if 'alvira_pos_error_m' in self.merged_data.columns:
+            alvira_valid = self.merged_data.dropna(subset=['alvira_pos_error_m'])
+            if len(alvira_valid) > 0:
+                print(f"\nALVIRA (2D Radar):")
+                print(f"   Detection Rate:      {len(alvira_valid)/total_records*100:.1f}% ({len(alvira_valid):,} detections)")
+                print(f"   Avg Position Error:  {alvira_valid['alvira_pos_error_m'].mean():.1f} ± {alvira_valid['alvira_pos_error_m'].std():.1f} m")
+                print(f"   Max Position Error:  {alvira_valid['alvira_pos_error_m'].max():.1f} m")
+                print(f"   Avg Altitude Error:  {alvira_valid['alvira_alt_error_m'].mean():.1f} m")
+
+        if 'arcus_pos_error_m' in self.merged_data.columns:
+            arcus_valid = self.merged_data.dropna(subset=['arcus_pos_error_m'])
+            if len(arcus_valid) > 0:
+                print(f"\nARCUS (3D Radar):")
+                print(f"   Detection Rate:      {len(arcus_valid)/total_records*100:.1f}% ({len(arcus_valid):,} detections)")
+                print(f"   Avg Position Error:  {arcus_valid['arcus_pos_error_m'].mean():.1f} ± {arcus_valid['arcus_pos_error_m'].std():.1f} m")
+                print(f"   Max Position Error:  {arcus_valid['arcus_pos_error_m'].max():.1f} m")
+                print(f"   Avg Altitude Error:  {arcus_valid['arcus_alt_error_m'].mean():.1f} m")
+
+        if 'diana_snr' in self.merged_data.columns:
+            diana_valid = self.merged_data.dropna(subset=['diana_snr'])
+            if len(diana_valid) > 0:
+                print(f"\nDIANA (RF Direction Finding):")
+                print(f"   Detection Rate:      {len(diana_valid)/total_records*100:.1f}% ({len(diana_valid):,} detections)")
+                print(f"   Avg SNR:            {diana_valid['diana_snr'].mean():.1f} dB")
+                if 'diana_range' in diana_valid.columns:
+                    print(f"   Max Range:          {diana_valid['diana_range'].max():.0f} m")
+
+        if 'venus_frequency' in self.merged_data.columns:
+            venus_valid = self.merged_data.dropna(subset=['venus_frequency'])
+            if len(venus_valid) > 0:
+                print(f"\nVENUS (RF Direction Finding):")
+                print(f"   Detection Rate:      {len(venus_valid)/total_records*100:.1f}% ({len(venus_valid):,} detections)")
+                print(f"   Avg Frequency:      {venus_valid['venus_frequency'].mean()/1e6:.0f} MHz")
+
+
+
+'''
+import pandas as pd
+import numpy as np
+import json
+import os
+import sys
+import threading
+import time
+import webbrowser
+from datetime import datetime
+from merger import merge_sensor_data as standard_merge
+import warnings
 warnings.filterwarnings('ignore')
 
 class MultiSensorDataProcessor:
@@ -27,7 +182,7 @@ class MultiSensorDataProcessor:
             print(f"[DEBUG] Directory contents: {os.listdir(self.data_dir)}")
         except Exception as e:
             print(f"[DEBUG] Could not list directory: {e}")
-            
+
         # Define expected files
         files_to_load = {
             'ground_truth': "2020-09-29_14-10-56_v2.csv",
@@ -130,7 +285,7 @@ class MultiSensorDataProcessor:
                 print(f"   Detection Rate:      {len(venus_valid)/total_records*100:.1f}% ({len(venus_valid):,} detections)")
                 print(f"   Avg Frequency:      {venus_valid['venus_frequency'].mean()/1e6:.0f} MHz")
 
-'''
+
     def merge_sensor_data(self):
         """Merge all sensor data with ground truth using time alignment"""
         if self.ground_truth is None:
