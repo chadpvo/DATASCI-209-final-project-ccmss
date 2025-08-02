@@ -85,6 +85,10 @@ def create_flask_app(merged_data):
                 return jsonify({'success': False, 'error': 'Scenario not found'}), 400
 
             new_path = os.path.join(SCENARIO_BASE_PATH, new_scenario)
+
+            print(f"Switching to scenario: {new_scenario}")
+            print(f"Path: {new_path}")
+            
             processor = MultiSensorDataProcessor(new_path)
             if not processor.load_all_data():
                 return jsonify({'success': False, 'error': 'Failed to load data'}), 500
