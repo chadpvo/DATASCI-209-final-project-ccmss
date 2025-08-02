@@ -465,7 +465,18 @@
           <li><strong>VENUS</strong> — RF direction-finding sensor with a 360° view. Located at 51.5193°N, 5.8579°E.</li>
         </ul>
       </div>
-      
+    
+    <div class="scenario-selector">
+        <h3>📁 Select Flight Scenario</h3>
+        <div class="scenario-buttons" style="margin: 10px 0;">
+            {% for scenario in scenarios %}
+              <button class="scenario-btn {% if scenario == current_scenario %}active{% endif %}"
+                      onclick="switchScenario('{{ scenario }}')">
+                {{ scenario.replace('_', ' ').title() }}
+              </button>
+            {% endfor %}
+          </div>              
+    </div> 
 
     <div class="container" style="color: white; margin-top: 10px; margin-bottom: 20px;">
         <h3>🧭 Timeline & Sensor Selection</h3>
@@ -494,17 +505,7 @@
             </div>
         </div>
             <!-- Scenario Selector -->
-        <div class="scenario-selector">
-            <h3>📁 Select Flight Scenario</h3>
-            <div class="scenario-buttons" style="margin: 10px 0;">
-                {% for scenario in scenarios %}
-                  <button class="scenario-btn {% if scenario == current_scenario %}active{% endif %}"
-                          onclick="switchScenario('{{ scenario }}')">
-                    {{ scenario.replace('_', ' ').title() }}
-                  </button>
-                {% endfor %}
-              </div>              
-        </div>
+        
     </div>
       
     <div id="performanceMetrics"></div>
