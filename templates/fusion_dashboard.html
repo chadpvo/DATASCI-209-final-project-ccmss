@@ -1022,7 +1022,7 @@
                     });
             }
             
-            function switchScenario(scenarioName) {
+            /*function switchScenario(scenarioName) {
                 fetch('/api/switch_scenario', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1049,7 +1049,56 @@
                     console.error("Switch scenario error:", err);
                     alert("Failed to switch scenario.");
                 });
+            }*/
+
+            function switchScenario(scenarioName) {
+                fetch('/api/switch_scenario', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scenario: scenarioName })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        currentScenario = scenarioName;
+
+                        if (data.drone_data_json) {
+                            droneData.length = 0; // clear old data
+                            data.drone_data_json.forEach(d => droneData.push(d)); // repopulate with new
+                            timeSlider.max = droneData.length - 1;
+                            timeSlider.value = 0;
+                            updatePlots(0);
+                            if (data.bounds) {
+                                const layoutUpdate = {
+                                    mapbox: {
+                                        center: {
+                                            lat: (data.bounds.min_latitude + data.bounds.max_latitude) / 2,
+                                            lon: (data.bounds.min_longitude + data.bounds.max_longitude) / 2
+                                        }
+                                    }
+                                };
+                                Plotly.relayout('flightPathMap', layoutUpdate);
+                            }
+                        }
+
+                        updatePerformanceMetrics();
+
+                        // Update button styles
+                        document.querySelectorAll('.scenario-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        const activeBtn = document.querySelector(`[onclick="switchScenario('${scenarioName}')"]`);
+                        if (activeBtn) activeBtn.classList.add('active');
+                    } else {
+                        alert(`Error: ${data.error}`);
+                    }
+                })
+                .catch(err => {
+                    console.error("Switch scenario error:", err);
+                    alert("Failed to switch scenario.");
+                });
             }
+
 
 
 

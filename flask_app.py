@@ -106,7 +106,12 @@ def create_flask_app(merged_data):
             bounds = compute_bounds(display_data)
             # current_scenario = new_scenario
             state["current_scenario"] = new_scenario
-            return jsonify({'success': True, 'message': f'Switched to {new_scenario}', 'bounds': bounds})
+            return jsonify({
+            'success': True,
+            'message': f'Switched to {new_scenario}',
+            'bounds': bounds,
+            'drone_data_json': display_data.to_dict(orient='records') 
+        })
         except Exception as e:
             #return jsonify({'success': False, 'error': str(e)}), 500
             print("[ERROR] Exception in switch_scenario:")
