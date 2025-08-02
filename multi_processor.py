@@ -22,6 +22,12 @@ class MultiSensorDataProcessor:
         """Load all sensor data files"""
         print("Loading multi-sensor drone detection data...")
 
+        print(f"[DEBUG] Looking for files in: {self.data_dir}")
+        try:
+            print(f"[DEBUG] Directory contents: {os.listdir(self.data_dir)}")
+        except Exception as e:
+            print(f"[DEBUG] Could not list directory: {e}")
+            
         # Define expected files
         files_to_load = {
             'ground_truth': "2020-09-29_14-10-56_v2.csv",
