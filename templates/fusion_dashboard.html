@@ -416,7 +416,7 @@
             <p>Please wait while we process the flight data...</p>
         </div>
     </div>
-
+    
     <div class="container" style="color: white; margin-top: 10px; margin-bottom: 20px;">
         <h3>🧭 Timeline & Sensor Selection</h3>
         <p>
@@ -530,9 +530,7 @@
         </div>
     </div>
 
-    <div id="polar-subplots-container" class="polar-wrapper"></div>
-
-    <script src="https://d3js.org/d3.v7.min.js">
+    <script>
         // Global variables
         let droneData = {{ drone_data_json | safe }};
         let currentScenario = "{{ current_scenario }}";
@@ -713,8 +711,6 @@
                 }
             }, 500);
         }
-
-        
 
         // Filter Sensor out
         function getSelectedSensors() {
