@@ -416,7 +416,7 @@
             <p>Please wait while we process the flight data...</p>
         </div>
     </div>
-    
+
     <div class="container" style="color: white; margin-top: 10px; margin-bottom: 20px;">
         <h3>🧭 Timeline & Sensor Selection</h3>
         <p>
@@ -530,7 +530,9 @@
         </div>
     </div>
 
-    <script>
+    <div id="polar-subplots-container" class="polar-wrapper"></div>
+
+    <script src="https://d3js.org/d3.v7.min.js">
         // Global variables
         let droneData = {{ drone_data_json | safe }};
         let currentScenario = "{{ current_scenario }}";
@@ -710,6 +712,19 @@
                     setTimeout(() => initializeFlightPathMap(), 1000);
                 }
             }, 500);
+        }
+
+        function updatePolarPlotByTime(currentTime) {
+            const filtered = droneData.filter(d => {
+                const dt = new Date(d["datetime(utc)"]);
+                return dt <= currentTime;
+            });
+
+            const container = document.getElementById("polar-subplots-container");
+            container.innerHTML = ''; // Clear previous plots
+
+            const polarNode = renderPolarSubplots(filtered);
+            container.appendChild(polarNode);
         }
 
         // Filter Sensor out
@@ -959,6 +974,9 @@
         timeSlider.addEventListener('input', (event) => {
             const selectedIndex = parseInt(event.target.value);
             updatePlots(selectedIndex);
+
+            const currentTime = new Date(timeRange[0].getTime() + (selectedIndex / 100) * (timeRange[1] - timeRange[0]));
+            updatePolarPlotByTime(currentTime);
         });
 
         // Check box logic
