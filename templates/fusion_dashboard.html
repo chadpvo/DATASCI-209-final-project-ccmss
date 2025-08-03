@@ -1134,7 +1134,7 @@
             .attr("fill", "none")
             .attr("stroke", "#ccc");
 
-            const trueLine = d3.line()
+            /*const trueLine = d3.line()
             .x((d) => polarToCartesian(d[trueKey], radius(d.time_radius))[0])
             .y((d) => polarToCartesian(d[trueKey], radius(d.time_radius))[1]);
 
@@ -1143,7 +1143,7 @@
             .attr("fill", "none")
             .attr("stroke", "black")
             .attr("stroke-width", 1.5)
-            .attr("d", trueLine);
+            .attr("d", trueLine);*/
 
             g.selectAll("circle.point")
             .data(polarData)
@@ -1178,24 +1178,23 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
         const timeSlider = document.getElementById("timeSlider");
-        if (!timeSlider) {
-            console.warn("⚠️ timeSlider element not found");
+        if (!timeSlider || !droneData) {
+            console.warn("Slider or data not available");
             return;
         }
     
+        const initialIndex = parseInt(timeSlider.value) || 0;
+    
+        // 👇 Render once on page load
+        renderPolarSubplots([droneData[initialIndex]]);
+        updatePlots(initialIndex);
+    
         timeSlider.addEventListener("input", (event) => {
             const selectedIndex = parseInt(event.target.value);
-            updatePlots(selectedIndex); // Other visualizations
-    
-            if (droneData && droneData.length > selectedIndex) {
-            const selectedFrame = droneData.slice(0, selectedIndex + 1);  // ✅ Trail
-            renderPolarSubplots(selectedFrame);
-            }
+            updatePlots(selectedIndex);
+            renderPolarSubplots([droneData[selectedIndex]]);
         });
         });
     </script>
-  
-
-
 </body>
 </html>
