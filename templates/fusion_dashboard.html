@@ -1177,13 +1177,21 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            const timeSlider = document.getElementById("timeSlider");
+            if (!timeSlider) {
+                console.warn("⚠️ timeSlider not found in DOM");
+                return;
+            }
+
             timeSlider.addEventListener("input", (event) => {
-                const selectedIndex = parseInt(event.target.value);  // ✅ Fix here
+                const selectedIndex = parseInt(event.target.value);
                 const selectedFrame = [droneData[selectedIndex]];
+                console.log("Updating polar plot with index:", selectedIndex, selectedFrame);
                 renderPolarSubplots(selectedFrame);
-            }); 
+            });
         });
     </script>
+
 
 </body>
 </html>
