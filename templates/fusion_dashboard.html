@@ -714,18 +714,7 @@
             }, 500);
         }
 
-        function updatePolarPlotByTime(currentTime) {
-            const filtered = droneData.filter(d => {
-                const dt = new Date(d["datetime(utc)"]);
-                return dt <= currentTime;
-            });
-
-            const container = document.getElementById("polar-subplots-container");
-            container.innerHTML = ''; // Clear previous plots
-
-            const polarNode = renderPolarSubplots(filtered);
-            container.appendChild(polarNode);
-        }
+        
 
         // Filter Sensor out
         function getSelectedSensors() {
@@ -974,9 +963,6 @@
         timeSlider.addEventListener('input', (event) => {
             const selectedIndex = parseInt(event.target.value);
             updatePlots(selectedIndex);
-
-            const currentTime = new Date(timeRange[0].getTime() + (selectedIndex / 100) * (timeRange[1] - timeRange[0]));
-            updatePolarPlotByTime(currentTime);
         });
 
         // Check box logic
