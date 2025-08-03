@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
+from random import choice
 from flask import Flask, render_template, jsonify, request
 from multi_processor import load_scenario_data, clean_data_for_json
 
