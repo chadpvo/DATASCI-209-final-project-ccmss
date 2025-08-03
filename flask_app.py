@@ -56,10 +56,13 @@ def index():
     max_lon = float(current_data['gt_longitude'].max() + 0.001)
     
     # Use the multi_scenario_dashboard.html template
+    images = ['bg.png']
+    chosen_image = choice(images)
     return render_template('fusion_dashboard.html',
                          scenarios=available_scenarios,
                          current_scenario=current_scenario,
                          drone_data_json=current_data.to_json(orient='records'),
+                         background_image=chosen_image,
                          total_frames=len(current_data),
                          min_latitude=min_lat,
                          max_latitude=max_lat,
