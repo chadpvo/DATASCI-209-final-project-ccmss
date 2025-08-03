@@ -1185,15 +1185,16 @@
     
         timeSlider.addEventListener("input", (event) => {
             const selectedIndex = parseInt(event.target.value);
-            updatePlots(selectedIndex);
+            updatePlots(selectedIndex); // Other visualizations
     
             if (droneData && droneData.length > selectedIndex) {
-            const selectedFrame = [droneData[selectedIndex]];
+            const selectedFrame = droneData.slice(0, selectedIndex + 1);  // ✅ Trail
             renderPolarSubplots(selectedFrame);
             }
         });
         });
     </script>
+  
 
 
 </body>
