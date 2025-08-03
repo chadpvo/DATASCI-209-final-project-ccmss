@@ -1062,140 +1062,121 @@
 
     <!-- Polar Subplots Function -->
     <script>
-        function renderPolarSubplots(filteredData) {
-        const dianaLoc = [51.519137, 5.857951];
-        const venusLoc = [51.5192716, 5.8579155];
-
-        function bearing(sensor, lat2, lon2) {
-            const [lat1d, lon1d] = sensor === "diana" ? dianaLoc : venusLoc;
-            const lat1 = (lat1d * Math.PI) / 180;
-            const lon1 = (lon1d * Math.PI) / 180;
-            lat2 = (lat2 * Math.PI) / 180;
-            lon2 = (lon2 * Math.PI) / 180;
-
-            const dlon = lon2 - lon1;
-            const x = Math.sin(dlon) * Math.cos(lat2);
-            const y = Math.cos(lat1) * Math.sin(lat2) -
-                    Math.sin(lat1) * Math.cos(lat2) * Math.cos(dlon);
-
-            return ((Math.atan2(x, y) * 180) / Math.PI + 360) % 360;
-        }
-
-        const polarData = filteredData.map((d) => {
-            const dianaBearing = d.diana_bearing;
-            const venusBearing = d.venus_azimuth;
-
-            const trueBearingDiana = bearing("diana", d.gt_latitude, d.gt_longitude);
-            const trueBearingVenus = bearing("venus", d.gt_latitude, d.gt_longitude);
-
-            return {
-            ...d,
-            datetime: new Date(d["datetime(utc)"]),
-            diana_bearing: dianaBearing,
-            venus_bearing: venusBearing,
-            true_bearing_diana: trueBearingDiana,
-            true_bearing_venus: trueBearingVenus,
-            diana_diff_abs: Math.abs(((dianaBearing - trueBearingDiana + 180) % 360) - 180),
-            venus_diff_abs: Math.abs(((venusBearing - trueBearingVenus + 180) % 360) - 180)
+        function renderPolarSubplots(frameData) {
+            const dianaLoc = [51.519137, 5.857951];
+            const venusLoc = [51.5192716, 5.8579155];
+    
+            function bearing(sensor, lat2, lon2) {
+                const [lat1d, lon1d] = sensor === "diana" ? dianaLoc : venusLoc;
+                const lat1 = (lat1d * Math.PI) / 180;
+                const lon1 = (lon1d * Math.PI) / 180;
+                lat2 = (lat2 * Math.PI) / 180;
+                lon2 = (lon2 * Math.PI) / 180;
+    
+                const dlon = lon2 - lon1;
+                const x = Math.sin(dlon) * Math.cos(lat2);
+                const y = Math.cos(lat1) * Math.sin(lat2) -
+                          Math.sin(lat1) * Math.cos(lat2) * Math.cos(dlon);
+                return ((Math.atan2(x, y) * 180) / Math.PI + 360) % 360;
+            }
+    
+            const frame = frameData[0];  // Just one frame
+            if (!frame) return;
+    
+            const dianaBearing = frame.diana_bearing;
+            const venusBearing = frame.venus_azimuth;
+            const trueBearingDiana = bearing("diana", frame.gt_latitude, frame.gt_longitude);
+            const trueBearingVenus = bearing("venus", frame.gt_latitude, frame.gt_longitude);
+    
+            const dianaDiff = Math.abs(((dianaBearing - trueBearingDiana + 180) % 360) - 180);
+            const venusDiff = Math.abs(((venusBearing - trueBearingVenus + 180) % 360) - 180);
+    
+            const polarFrame = {
+                ...frame,
+                diana_bearing: dianaBearing,
+                venus_bearing: venusBearing,
+                true_bearing_diana: trueBearingDiana,
+                true_bearing_venus: trueBearingVenus,
+                diana_diff_abs: dianaDiff,
+                venus_diff_abs: venusDiff,
+                time_radius: 200  // static radius for single-frame visualization
             };
-        });
-
-        const minTime = d3.min(polarData, (d) => d.datetime);
-        polarData.forEach((d) => {
-            d.time_radius = (d.datetime - minTime) / 1000;
-        });
-
-        const width = 500, height = 500, margin = 50;
-        const radius = d3.scaleLinear().domain([0, 800]).range([0, width / 2 - margin - 60]);
-        const color = d3.scaleSequential().domain([180, 0]).interpolator(d3.interpolateRdBu);
-
-        function polarToCartesian(angleDeg, r) {
-            const angleRad = ((angleDeg - 90) * Math.PI) / 180;
-            return [r * Math.cos(angleRad), r * Math.sin(angleRad)];
-        }
-
-        function createPlot(container, title, bearingKey, trueKey, diffKey) {
-            const svg = container.append("svg").attr("width", width).attr("height", height);
-            const g = svg.append("g").attr("transform", `translate(${width / 2},${height / 2})`);
-            const rOuter = radius(800);
-
-            g.selectAll("line.bearing")
-            .data(d3.range(0, 360, 30))
-            .join("line")
-            .attr("x1", 0).attr("y1", 0)
-            .attr("x2", (d) => polarToCartesian(d, rOuter)[0])
-            .attr("y2", (d) => polarToCartesian(d, rOuter)[1])
-            .attr("stroke", "#ccc").attr("stroke-dasharray", "2,2");
-
-            g.selectAll("circle.grid")
-            .data(radius.ticks(5))
-            .join("circle")
-            .attr("r", d => radius(d))
-            .attr("fill", "none")
-            .attr("stroke", "#ccc");
-
-            const trueLine = d3.line()
-            .x((d) => polarToCartesian(d[trueKey], radius(d.time_radius))[0])
-            .y((d) => polarToCartesian(d[trueKey], radius(d.time_radius))[1]);
-
-            g.append("path")
-            .datum(polarData)
-            .attr("fill", "none")
-            .attr("stroke", "black")
-            .attr("stroke-width", 1.5)
-            .attr("d", trueLine);
-
-            g.selectAll("circle.point")
-            .data(polarData)
-            .join("circle")
-            .attr("cx", d => polarToCartesian(d[bearingKey], radius(d.time_radius))[0])
-            .attr("cy", d => polarToCartesian(d[bearingKey], radius(d.time_radius))[1])
-            .attr("r", 4)
-            .attr("fill", d => color(Math.min(d[diffKey], 180)))
-            .attr("opacity", 0.85);
-
-            svg.append("text")
-            .attr("x", width / 2).attr("y", 20)
-            .attr("text-anchor", "middle")
-            .attr("font-weight", "bold")
-            .text(title);
-        }
-
-        // Clear and render
-        d3.select("#polar-subplots-container").html("");
-
-        const container = d3.select("#polar-subplots-container")
-            .append("div")
-            .style("display", "flex")
-            .style("justify-content", "center")
-            .style("gap", "40px");
-
-        createPlot(container, "DIANA Bearings", "diana_bearing", "true_bearing_diana", "diana_diff_abs");
-        createPlot(container, "VENUS Bearings", "venus_bearing", "true_bearing_venus", "venus_diff_abs");
+    
+            const width = 400, height = 400, margin = 40;
+            const radius = d3.scaleLinear().domain([0, 800]).range([0, width / 2 - margin - 40]);
+            const color = d3.scaleSequential().domain([180, 0]).interpolator(d3.interpolateRdBu);
+    
+            function polarToCartesian(angleDeg, r) {
+                const angleRad = ((angleDeg - 90) * Math.PI) / 180;
+                return [r * Math.cos(angleRad), r * Math.sin(angleRad)];
+            }
+    
+            function createPlot(container, title, bearingKey, trueKey, diffKey) {
+                const svg = container.append("svg").attr("width", width).attr("height", height);
+                const g = svg.append("g").attr("transform", `translate(${width / 2},${height / 2})`);
+                const rOuter = radius(800);
+    
+                g.selectAll("line.bearing")
+                    .data(d3.range(0, 360, 30))
+                    .join("line")
+                    .attr("x1", 0).attr("y1", 0)
+                    .attr("x2", (d) => polarToCartesian(d, rOuter)[0])
+                    .attr("y2", (d) => polarToCartesian(d, rOuter)[1])
+                    .attr("stroke", "#ccc").attr("stroke-dasharray", "2,2");
+    
+                g.selectAll("circle.grid")
+                    .data(radius.ticks(4))
+                    .join("circle")
+                    .attr("r", d => radius(d))
+                    .attr("fill", "none")
+                    .attr("stroke", "#ccc");
+    
+                // Only one frame = one circle
+                g.append("circle")
+                    .attr("cx", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[0])
+                    .attr("cy", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[1])
+                    .attr("r", 5)
+                    .attr("fill", color(polarFrame[diffKey]))
+                    .attr("opacity", 0.95);
+    
+                svg.append("text")
+                    .attr("x", width / 2).attr("y", 20)
+                    .attr("text-anchor", "middle")
+                    .attr("font-weight", "bold")
+                    .text(title);
+            }
+    
+            d3.select("#polar-subplots-container").html("");
+    
+            const container = d3.select("#polar-subplots-container")
+                .append("div")
+                .style("display", "flex")
+                .style("justify-content", "center")
+                .style("gap", "30px");
+    
+            createPlot(container, "DIANA Bearings", "diana_bearing", "true_bearing_diana", "diana_diff_abs");
+            createPlot(container, "VENUS Bearings", "venus_bearing", "true_bearing_venus", "venus_diff_abs");
         }
     </script>
+    
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-        const timeSlider = document.getElementById("timeSlider");
-        if (!timeSlider) {
-            console.warn("⚠️ timeSlider element not found");
-            return;
-        }
-    
-        timeSlider.addEventListener("input", (event) => {
-            const selectedIndex = parseInt(event.target.value);
-            updatePlots(selectedIndex); // Other visualizations
-    
-            if (droneData && droneData.length > selectedIndex) {
-                const selectedFrame = droneData.slice(0, selectedIndex + 1); 
-                renderPolarSubplots(selectedFrame);
+            const timeSlider = document.getElementById("timeSlider");            
+            function updateAllVisualizations(index) {
+                updatePlots(index);  // Existing function for map/tables
+                const frame = [droneData[index]];
+                renderPolarSubplots(frame);  // Polar plots
             }
-        });
+    
+            timeSlider.addEventListener("input", (event) => {
+                const selectedIndex = parseInt(event.target.value);
+                updateAllVisualizations(selectedIndex);
+            });
+    
+            // Initial load
+            updateAllVisualizations(0);
         });
     </script>
-  
-
-
 </body>
 </html>
