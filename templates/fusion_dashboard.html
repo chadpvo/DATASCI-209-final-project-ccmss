@@ -1062,7 +1062,7 @@
 
     <!-- Polar Subplots Function -->
     <script>
-        function renderPolarSubplots(data) {
+        function renderPolarSubplots(filteredData) {
         const dianaLoc = [51.519137, 5.857951];
         const venusLoc = [51.5192716, 5.8579155];
 
@@ -1081,7 +1081,7 @@
             return ((Math.atan2(x, y) * 180) / Math.PI + 360) % 360;
         }
 
-        const polarData = data.map((d) => {
+        const polarData = filteredData.map((d) => {
             const dianaBearing = d.diana_bearing;
             const venusBearing = d.venus_azimuth;
 
@@ -1176,11 +1176,14 @@
     </script>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        renderPolarSubplots(droneData); // assumes droneData is already defined
-    });
+        document.addEventListener("DOMContentLoaded", function () {
+            timeSlider.addEventListener("input", (event) => {
+                const selectedIndex = parseInt(event.target.value);  // ✅ Fix here
+                const selectedFrame = [droneData[selectedIndex]];
+                renderPolarSubplots(selectedFrame);
+            }); 
+        });
     </script>
-
 
 </body>
 </html>
