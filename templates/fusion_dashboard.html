@@ -1178,23 +1178,24 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
         const timeSlider = document.getElementById("timeSlider");
-        if (!timeSlider || !droneData) {
-            console.warn("Slider or data not available");
+        if (!timeSlider) {
+            console.warn("⚠️ timeSlider element not found");
             return;
         }
     
-        const initialIndex = parseInt(timeSlider.value) || 0;
-    
-        // 👇 Render once on page load
-        renderPolarSubplots([droneData[initialIndex]]);
-        updatePlots(initialIndex);
-    
         timeSlider.addEventListener("input", (event) => {
             const selectedIndex = parseInt(event.target.value);
-            updatePlots(selectedIndex);
-            renderPolarSubplots([droneData[selectedIndex]]);
+            updatePlots(selectedIndex); // Other visualizations
+    
+            if (droneData && droneData.length > selectedIndex) {
+            //const selectedFrame = droneData.slice(0, selectedIndex + 1); 
+            renderPolarSubplots(selectedFrame);
+            }
         });
         });
     </script>
+  
+
+
 </body>
 </html>
