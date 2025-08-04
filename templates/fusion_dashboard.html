@@ -36,14 +36,16 @@
             background: #333;
             color: white;
             border-radius: 15px;
-            border: 2px solid white;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
             width: 100%;
             max-width: min(95vw, 1600px);
             margin: 20px auto;
-            padding: 20px;
             box-sizing: border-box;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            position: relative;
         }
 
         /* Scenario Selector Styles */
@@ -529,20 +531,18 @@
         </div>
     </div>     
       
-    <div class="container chart-section">
+    <div class="bearing-container">
         <div class="chart-description">
-          <h3 style="color:white">🕸️ Polar Time-Bearing Plot</h3>
-          <p style="color:white">
-            The radar chart displays DIANA and VENUS’s detected bearings—angles relative to each sensor—over time against the Ground Truth.
-            The radius represents time, with each ring marking 200-second intervals.
-            <span style="color:#e06b6b;">Red</span> indicates missed detections, likely when the drone was out of view or obstructed.
-          </p>
+            <h3 style="color:white">🕸️ Polar Time-Bearing Plot</h3>
+            <p style="color:white">
+                The radar chart displays DIANA and VENUS’s detected bearings—angles relative to each sensor—over time against the Ground Truth.
+                The radius represents time, with each ring marking 200-second intervals.
+                <span style="color:#e06b6b;">Red</span> indicates missed detections, likely when the drone was out of view or obstructed.
+            </p>
         </div>
-      
-        <div class="chart-panel">
-          <div id="polar-subplots-container"></div>
-        </div>
-    </div>      
+
+        <div id="polar-subplots-container" style="margin-top: 40px;"></div>
+    </div>
     
     <div class="performance-panel">
         <h2>Real-Time Performance Metrics</h2>
