@@ -1193,7 +1193,7 @@
             g.append("circle")
               .attr("cx", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[0])
               .attr("cy", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[1])
-              .attr("r", 5)
+              .attr("r", 3)
               .attr("fill", color(polarFrame[diffKey]))
               .attr("opacity", 0.95);
         
@@ -1250,23 +1250,18 @@
         }
         </script>
         
-    
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const timeSlider = document.getElementById("timeSlider");            
             function updateAllVisualizations(index) {
                 updatePlots(index);  // Existing function for map/tables
-                const frame = [droneData[index]];
-                renderPolarSubplots(frame);  // Polar plots
+                const frames = droneData.slice(0, index + 1);
+                renderPolarSubplots(frames);  // Polar plots
             }
-    
             timeSlider.addEventListener("input", (event) => {
                 const selectedIndex = parseInt(event.target.value);
                 updateAllVisualizations(selectedIndex);
-            });
-    
-            // Initial load
+            });   
             updateAllVisualizations(0);
         });
     </script>
