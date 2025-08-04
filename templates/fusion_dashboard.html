@@ -1096,7 +1096,7 @@
           if (!frameData || frameData.length === 0) return;
           
           const frame = frameData[frameData.length - 1];      
-           
+
           const trueBearingDiana = bearing("diana", frame.gt_latitude, frame.gt_longitude);
           const trueBearingVenus = bearing("venus", frame.gt_latitude, frame.gt_longitude);
           const dianaDiff = Math.abs(((frame.diana_bearing - trueBearingDiana + 180) % 360) - 180);
@@ -1251,61 +1251,27 @@
           return container.node()
         }
     </script>
-        
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const timeSlider = document.getElementById("timeSlider");
-            const polarContainer = document.getElementById("polar-subplots-container");
-        
-            // Safety checks
-            if (!window.droneData || droneData.length === 0) {
-                console.error("Missing or empty droneData");
-                return;
-            }
-        
-            if (!timeSlider || !polarContainer) {
-                console.error("Missing timeSlider or polar-subplots-container in DOM");
-                return;
-            }
-        
+            const droneData = {{ drone_data_json | safe }};
+            
             function updateAllVisualizations(index) {
-                try {
-                    // Optional: map, tables, or other visuals
-                    if (typeof updatePlots === "function") {
-                        updatePlots(index);
-                    } else {
-                        console.warn("updatePlots is not defined");
-                    }
-        
-                    // Trailing history for polar plot
-                    const trailingFrames = droneData.slice(0, index + 1);
-                    const polarNode = renderPolarSubplots(trailingFrames);
-        
-                    if (polarNode) {
-                        polarContainer.innerHTML = "";
-                        polarContainer.appendChild(polarNode);
-                    } else {
-                        console.warn("renderPolarSubplots returned null");
-                    }
-                } catch (e) {
-                    console.error("Error in updateAllVisualizations:", e);
-                }
+                updatePlots(index);  // Existing function for map/tables
+                const frame = [droneData[index]];
+                renderPolarSubplots(frame);  // Polar plots
             }
-        
-            // 🔁 Initial load with index 0
-            updateAllVisualizations(0);
-        
-            // 🔁 Update on slider move
+
             timeSlider.addEventListener("input", (event) => {
                 const selectedIndex = parseInt(event.target.value);
-                if (!isNaN(selectedIndex)) {
-                    updateAllVisualizations(selectedIndex);
-                }
+                updateAllVisualizations(selectedIndex);
             });
-        });
-        </script>
-            
 
-        
+            // Initial load
+            updateAllVisualizations(0);
+        });
+    </script>
+     
 </body>
 </html>
