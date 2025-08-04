@@ -1074,101 +1074,182 @@
     <!-- Polar Subplots Function -->
     <script>
         function renderPolarSubplots(frameData) {
-            const dianaLoc = [51.519137, 5.857951];
-            const venusLoc = [51.5192716, 5.8579155];
-    
-            function bearing(sensor, lat2, lon2) {
-                const [lat1d, lon1d] = sensor === "diana" ? dianaLoc : venusLoc;
-                const lat1 = (lat1d * Math.PI) / 180;
-                const lon1 = (lon1d * Math.PI) / 180;
-                lat2 = (lat2 * Math.PI) / 180;
-                lon2 = (lon2 * Math.PI) / 180;
-    
-                const dlon = lon2 - lon1;
-                const x = Math.sin(dlon) * Math.cos(lat2);
-                const y = Math.cos(lat1) * Math.sin(lat2) -
-                          Math.sin(lat1) * Math.cos(lat2) * Math.cos(dlon);
-                return ((Math.atan2(x, y) * 180) / Math.PI + 360) % 360;
-            }
-    
-            const frame = frameData[0];  // Just one frame
-            if (!frame) return;
-    
-            const dianaBearing = frame.diana_bearing;
-            const venusBearing = frame.venus_azimuth;
-            const trueBearingDiana = bearing("diana", frame.gt_latitude, frame.gt_longitude);
-            const trueBearingVenus = bearing("venus", frame.gt_latitude, frame.gt_longitude);
-    
-            const dianaDiff = Math.abs(((dianaBearing - trueBearingDiana + 180) % 360) - 180);
-            const venusDiff = Math.abs(((venusBearing - trueBearingVenus + 180) % 360) - 180);
-    
-            const polarFrame = {
-                ...frame,
-                diana_bearing: dianaBearing,
-                venus_bearing: venusBearing,
-                true_bearing_diana: trueBearingDiana,
-                true_bearing_venus: trueBearingVenus,
-                diana_diff_abs: dianaDiff,
-                venus_diff_abs: venusDiff,
-                time_radius: 200  // static radius for single-frame visualization
-            };
-    
-            const width = 400, height = 400, margin = 40;
-            const radius = d3.scaleLinear().domain([0, 800]).range([0, width / 2 - margin - 40]);
-            const color = d3.scaleSequential().domain([180, 0]).interpolator(d3.interpolateRdBu);
-    
-            function polarToCartesian(angleDeg, r) {
-                const angleRad = ((angleDeg - 90) * Math.PI) / 180;
-                return [r * Math.cos(angleRad), r * Math.sin(angleRad)];
-            }
-    
-            function createPlot(container, title, bearingKey, trueKey, diffKey) {
-                const svg = container.append("svg").attr("width", width).attr("height", height);
-                const g = svg.append("g").attr("transform", `translate(${width / 2},${height / 2})`);
-                const rOuter = radius(800);
-    
-                g.selectAll("line.bearing")
-                    .data(d3.range(0, 360, 30))
-                    .join("line")
-                    .attr("x1", 0).attr("y1", 0)
-                    .attr("x2", (d) => polarToCartesian(d, rOuter)[0])
-                    .attr("y2", (d) => polarToCartesian(d, rOuter)[1])
-                    .attr("stroke", "#ccc").attr("stroke-dasharray", "2,2");
-    
-                g.selectAll("circle.grid")
-                    .data(radius.ticks(4))
-                    .join("circle")
-                    .attr("r", d => radius(d))
-                    .attr("fill", "none")
-                    .attr("stroke", "#ccc");
-    
-                // Only one frame = one circle
-                g.append("circle")
-                    .attr("cx", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[0])
-                    .attr("cy", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[1])
-                    .attr("r", 5)
-                    .attr("fill", color(polarFrame[diffKey]))
-                    .attr("opacity", 0.95);
-    
-                svg.append("text")
-                    .attr("x", width / 2).attr("y", 20)
-                    .attr("text-anchor", "middle")
-                    .attr("font-weight", "bold")
-                    .text(title);
-            }
-    
-            d3.select("#polar-subplots-container").html("");
-    
-            const container = d3.select("#polar-subplots-container")
-                .append("div")
-                .style("display", "flex")
-                .style("justify-content", "center")
-                .style("gap", "30px");
-    
-            createPlot(container, "DIANA Bearings", "diana_bearing", "true_bearing_diana", "diana_diff_abs");
-            createPlot(container, "VENUS Bearings", "venus_bearing", "true_bearing_venus", "venus_diff_abs");
+          const dianaLoc = [51.519137, 5.857951];
+          const venusLoc = [51.5192716, 5.8579155];
+        
+          function bearing(sensor, lat2, lon2) {
+            const [lat1d, lon1d] = sensor === "diana" ? dianaLoc : venusLoc;
+            const lat1 = (lat1d * Math.PI) / 180;
+            const lon1 = (lon1d * Math.PI) / 180;
+            lat2 = (lat2 * Math.PI) / 180;
+            lon2 = (lon2 * Math.PI) / 180;
+        
+            const dlon = lon2 - lon1;
+            const x = Math.sin(dlon) * Math.cos(lat2);
+            const y =
+              Math.cos(lat1) * Math.sin(lat2) -
+              Math.sin(lat1) * Math.cos(lat2) * Math.cos(dlon);
+        
+            return ((Math.atan2(x, y) * 180) / Math.PI + 360) % 360;
+          }
+        
+          const frame = frameData[0];
+          if (!frame) return;
+        
+          const trueBearingDiana = bearing("diana", frame.gt_latitude, frame.gt_longitude);
+          const trueBearingVenus = bearing("venus", frame.gt_latitude, frame.gt_longitude);
+          const dianaDiff = Math.abs(((frame.diana_bearing - trueBearingDiana + 180) % 360) - 180);
+          const venusDiff = Math.abs(((frame.venus_azimuth - trueBearingVenus + 180) % 360) - 180);
+        
+          const polarFrame = {
+            ...frame,
+            diana_bearing: frame.diana_bearing,
+            venus_bearing: frame.venus_azimuth,
+            true_bearing_diana: trueBearingDiana,
+            true_bearing_venus: trueBearingVenus,
+            diana_diff_abs: dianaDiff,
+            venus_diff_abs: venusDiff,
+            time_radius: 200
+          };
+        
+          const width = 450;
+          const height = 450;
+          const margin = 50;
+          const diffMax = 180;
+        
+          const radius = d3.scaleLinear()
+            .domain([0, 800])
+            .range([0, width / 2 - margin - 20]);
+        
+          const color = d3.scaleSequential()
+            .domain([diffMax, 0])
+            .interpolator(d3.interpolateRdBu);
+        
+          function polarToCartesian(angleDeg, r) {
+            const angleRad = ((angleDeg - 90) * Math.PI) / 180;
+            return [r * Math.cos(angleRad), r * Math.sin(angleRad)];
+          }
+        
+          function createPlot(container, title, bearingKey, trueKey, diffKey) {
+            const svg = container.append("svg")
+              .attr("width", width)
+              .attr("height", height + 90)
+              .style("background", "#2f2f2f");
+        
+            const g = svg.append("g")
+              .attr("transform", `translate(${width / 2},${height / 2})`);
+        
+            // Bearing lines
+            const rOuter = radius(800);
+            const angles = d3.range(0, 360, 30);
+        
+            g.selectAll("line.bearing")
+              .data(angles)
+              .join("line")
+              .attr("x1", 0)
+              .attr("y1", 0)
+              .attr("x2", d => polarToCartesian(d, rOuter)[0])
+              .attr("y2", d => polarToCartesian(d, rOuter)[1])
+              .attr("stroke", "#666")
+              .attr("stroke-dasharray", "2,2");
+        
+            g.selectAll("text.bearing-label")
+              .data(angles)
+              .join("text")
+              .attr("x", d => polarToCartesian(d, rOuter + 15)[0])
+              .attr("y", d => polarToCartesian(d, rOuter + 15)[1])
+              .attr("text-anchor", "middle")
+              .attr("font-size", "10px")
+              .attr("fill", "white")
+              .text(d => `${d}°`);
+        
+            g.selectAll("circle.grid")
+              .data(radius.ticks(4))
+              .join("circle")
+              .attr("r", d => radius(d))
+              .attr("fill", "none")
+              .attr("stroke", "#555");
+        
+            g.selectAll("text.rlabel")
+              .data(radius.ticks(4))
+              .join("text")
+              .attr("x", d => polarToCartesian(225, radius(d))[0])
+              .attr("y", d => polarToCartesian(225, radius(d))[1])
+              .attr("dy", "0.35em")
+              .attr("font-size", "10px")
+              .attr("fill", "white")
+              .text(d => `${d}s`);
+        
+            // True bearing line (from center to outer)
+            g.append("line")
+              .attr("x1", 0)
+              .attr("y1", 0)
+              .attr("x2", polarToCartesian(polarFrame[trueKey], radius(polarFrame.time_radius))[0])
+              .attr("y2", polarToCartesian(polarFrame[trueKey], radius(polarFrame.time_radius))[1])
+              .attr("stroke", "white")
+              .attr("stroke-width", 1.5);
+        
+            // Detected point
+            g.append("circle")
+              .attr("cx", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[0])
+              .attr("cy", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[1])
+              .attr("r", 5)
+              .attr("fill", color(polarFrame[diffKey]))
+              .attr("opacity", 0.95);
+        
+            // Title
+            svg.append("text")
+              .attr("x", width / 2)
+              .attr("y", 25)
+              .attr("text-anchor", "middle")
+              .attr("font-weight", "bold")
+              .attr("fill", "white")
+              .text(title);
+        
+            // Legend
+            const legend = svg.append("g")
+              .attr("transform", `translate(${width / 2 - 120}, ${height + 20})`);
+        
+            legend.append("line")
+              .attr("x1", 0)
+              .attr("y1", 0)
+              .attr("x2", 15)
+              .attr("y2", 0)
+              .attr("stroke", "white")
+              .attr("stroke-width", 2);
+            legend.append("text")
+              .attr("x", 20)
+              .attr("y", 5)
+              .attr("fill", "white")
+              .attr("font-size", "12px")
+              .text("True Bearing");
+        
+            legend.append("circle")
+              .attr("cx", 120)
+              .attr("cy", 0)
+              .attr("r", 5)
+              .attr("fill", color(0));
+            legend.append("text")
+              .attr("x", 130)
+              .attr("y", 5)
+              .attr("fill", "white")
+              .attr("font-size", "12px")
+              .text("Sensor Bearing");
+          }
+        
+          // Clear container and re-render
+          d3.select("#polar-subplots-container").html("");
+          const container = d3.select("#polar-subplots-container")
+            .append("div")
+            .style("display", "flex")
+            .style("justify-content", "center")
+            .style("gap", "40px");
+        
+          createPlot(container, "DIANA Bearings", "diana_bearing", "true_bearing_diana", "diana_diff_abs");
+          createPlot(container, "VENUS Bearings", "venus_bearing", "true_bearing_venus", "venus_diff_abs");
         }
-    </script>
+        </script>
+        
     
 
     <script>
