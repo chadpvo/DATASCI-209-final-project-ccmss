@@ -1248,7 +1248,7 @@
         
           createPlot(container, "DIANA Bearings", "diana_bearing", "true_bearing_diana", "diana_diff_abs");
           createPlot(container, "VENUS Bearings", "venus_bearing", "true_bearing_venus", "venus_diff_abs");
-          return container.node()
+          return container.node();
         }
     </script>
 
@@ -1261,6 +1261,11 @@
                 updatePlots(index);  // Existing function for map/tables
                 const frame = [droneData[index]];
                 renderPolarSubplots(frame);  // Polar plots
+
+                if (polarNode) {
+                polarContainer.innerHTML = "";
+                polarContainer.appendChild(polarNode);
+                }
             }
 
             timeSlider.addEventListener("input", (event) => {
