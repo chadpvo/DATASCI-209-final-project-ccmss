@@ -1165,7 +1165,7 @@
               .attr("transform", `translate(${width / 2},${height / 2})`);
         
             // Bearing lines
-            const rOuter = radius(rMax);
+            const rOuter = radius(1000);
             const angles = d3.range(0, 360, 30);
         
             g.selectAll("line.bearing")
