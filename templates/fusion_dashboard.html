@@ -1292,13 +1292,68 @@
               .attr("cy", 0)
               .attr("r", 5)
               .attr("fill", color(0));
+
             legend.append("text")
               .attr("x", 130)
               .attr("y", 5)
               .attr("fill", "white")
               .attr("font-size", "12px")
               .text("Sensor Bearing");
+
+              const gradId = `${title.replace(/\s+/g, "-")}-grad`;
+                const defs = svg.append("defs");
+                const gradient = defs
+                .append("linearGradient")
+                .attr("id", gradId)
+                .attr("x1", "0%")
+                .attr("x2", "100%")
+                .attr("y1", "0%")
+                .attr("y2", "0%");
+
+                gradient
+                .selectAll("stop")
+                .data(d3.ticks(0, 1, 20))
+                .join("stop")
+                .attr("offset", d => `${d * 100}%`)
+                .attr("stop-color", d => d3.interpolateRdBu(1 - d));
+
+                // Color bar + axis
+                const colorLegendGroup = svg
+                .append("g")
+                .attr("transform", `translate(${width / 2 - 120}, ${height + 50})`);
+
+                const legendWidth = 240;
+                const legendHeight = 12;
+
+                colorLegendGroup
+                .append("rect")
+                .attr("width", legendWidth)
+                .attr("height", legendHeight)
+                .style("fill", `url(#${gradId})`);
+
+                const legendScale = d3.scaleLinear()
+                .domain([0, diffMax])
+                .range([0, legendWidth]);
+
+                const legendAxis = d3.axisBottom(legendScale).ticks(5);
+
+                colorLegendGroup
+                .append("g")
+                .attr("transform", `translate(0, ${legendHeight})`)
+                .call(legendAxis)
+                .call(g => g.selectAll("text").attr("fill", "white"))
+                .call(g => g.selectAll("line,path").attr("stroke", "white"));
+
+                colorLegendGroup
+                .append("text")
+                .attr("x", 0)
+                .attr("y", -6)
+                .attr("font-size", "12px")
+                .attr("fill", "white")
+                .text("Bearing Error (°)");
           }
+
+          
         
           // Clear container and re-render
           d3.select("#polar-subplots-container").html("");
