@@ -1250,20 +1250,36 @@
         }
         </script>
         
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const timeSlider = document.getElementById("timeSlider");            
-            function updateAllVisualizations(index) {
-                updatePlots(index);  // Existing function for map/tables
-                const frames = droneData.slice(0, index + 1);
-                renderPolarSubplots(frames);  // Polar plots
-            }
-            timeSlider.addEventListener("input", (event) => {
-                const selectedIndex = parseInt(event.target.value);
-                updateAllVisualizations(selectedIndex);
-            });   
-            updateAllVisualizations(0);
-        });
-    </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const timeSlider = document.getElementById("timeSlider");
+                const polarContainer = document.getElementById("polar-subplots-container");
+        
+                function updateAllVisualizations(index) {
+                    updatePlots(index);  // Existing function for map/tables
+        
+                    // Get trailing slice of data
+                    const frames = droneData.slice(0, index + 1);
+        
+                    // Render new polar plots
+                    const polarNode = renderPolarSubplots(frames);
+        
+                    // Replace existing plot in container
+                    if (polarContainer) {
+                        polarContainer.innerHTML = "";  // Clear
+                        polarContainer.appendChild(polarNode);  // Re-append
+                    }
+                }
+        
+                timeSlider.addEventListener("input", (event) => {
+                    const selectedIndex = parseInt(event.target.value);
+                    updateAllVisualizations(selectedIndex);
+                });
+        
+                // Initial load
+                updateAllVisualizations(0);
+            });
+        </script>
+        
 </body>
 </html>
