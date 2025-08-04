@@ -529,18 +529,20 @@
         </div>
     </div>     
       
-    <div class="bearing-container">
+    <div class="container chart-section">
         <div class="chart-description">
-            <h3 style="color:white">🕸️ Polar Time-Bearing Plot</h3>
-            <p style="color:white">
-                The radar chart displays DIANA and VENUS’s detected bearings—angles relative to each sensor—over time against the Ground Truth.
-                The radius represents time, with each ring marking 200-second intervals.
-                <span style="color:#e06b6b;">Red</span> indicates missed detections, likely when the drone was out of view or obstructed.
-            </p>
+          <h3 style="color:white">🕸️ Polar Time-Bearing Plot</h3>
+          <p style="color:white">
+            The radar chart displays DIANA and VENUS’s detected bearings—angles relative to each sensor—over time against the Ground Truth.
+            The radius represents time, with each ring marking 200-second intervals.
+            <span style="color:#e06b6b;">Red</span> indicates missed detections, likely when the drone was out of view or obstructed.
+          </p>
         </div>
-
-        <div id="polar-subplots-container" style="margin-top: 40px;"></div>
-    </div>
+      
+        <div class="chart-panel">
+          <div id="polar-subplots-container"></div>
+        </div>
+    </div>      
     
     <div class="performance-panel">
         <h2>Real-Time Performance Metrics</h2>
