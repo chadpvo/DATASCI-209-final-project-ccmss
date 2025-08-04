@@ -526,6 +526,8 @@
         </div>
     </div>       
 
+    <div id="polar-subplots-container" style="margin-top: 40px;"></div>
+
     <div class="performance-panel">
         <h2>Real-Time Performance Metrics</h2>
         <p style="color:white">
@@ -540,8 +542,6 @@
             </div>
         </div>
     </div>
-
-    <div id="polar-subplots-container" style="margin-top: 40px;"></div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
@@ -1258,24 +1258,33 @@
             const droneData = {{ drone_data_json | safe }};
             
             function updateAllVisualizations(index) {
-                updatePlots(index);  // Existing function for map/tables
+                updatePlots(index);  // Existing function for map/
+                
                 const frame = [droneData[index]];
+                const polarContainer = document.getElementById("polar-subplots-container");
+
                 renderPolarSubplots(frame);  // Polar plots
 
+                if (polarContainer && typeof renderPolarSubplots === "function") {
+                const polarNode = renderPolarSubplots(frame);
                 if (polarNode) {
-                polarContainer.innerHTML = "";
-                polarContainer.appendChild(polarNode);
+                    polarContainer.innerHTML = "";
+                    polarContainer.appendChild(polarNode);
                 }
+            } else {
+                console.warn("Polar container or renderPolarSubplots not ready");
             }
+        }
 
             timeSlider.addEventListener("input", (event) => {
                 const selectedIndex = parseInt(event.target.value);
                 updateAllVisualizations(selectedIndex);
             });
 
-            // Initial load
+            setTimeout(() => {
             updateAllVisualizations(0);
-        });
+        }, 0);
+    }
     </script>
      
 </body>
