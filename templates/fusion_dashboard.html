@@ -1189,6 +1189,15 @@
               .attr("y2", polarToCartesian(polarFrame[trueKey], radius(polarFrame.time_radius))[1])
               .attr("stroke", "white")
               .attr("stroke-width", 1.5);
+
+              if (showDot) {
+            g.append("circle")
+                .attr("cx", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[0])
+                .attr("cy", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[1])
+                .attr("r", 3)
+                .attr("fill", color(polarFrame[diffKey]))
+                .attr("opacity", 0.95);
+                }
         
             // Detected point
             g.append("circle")
@@ -1262,7 +1271,7 @@
 
                 if (typeof renderPolarSubplots === "function" && polarContainer) {
                     const frame = [droneData[index]];
-                    const polarNode = renderPolarSubplots(frame);  // Only call once
+                    const polarNode = renderPolarSubplots(frame, true);  // show dot on slider change
 
                     if (polarNode instanceof HTMLElement) {
                         polarContainer.innerHTML = "";  // Clear previous plot
@@ -1283,7 +1292,15 @@
                 }
             });
 
-            // Initial load
+            if (window.droneData && droneData.length > 0 && typeof renderPolarSubplots === "function") {
+                const staticNode = renderPolarSubplots([droneData[0]], false);  // preload with no dot
+                if (staticNode instanceof HTMLElement) {
+                    polarContainer.innerHTML = "";
+                    polarContainer.appendChild(staticNode);
+                }
+            }
+
+            // Initial full visualization (first frame with dot)
             updateAllVisualizations(0);
         });
     </script>
