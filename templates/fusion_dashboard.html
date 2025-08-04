@@ -1093,8 +1093,7 @@
             return ((Math.atan2(x, y) * 180) / Math.PI + 360) % 360;
           }
         
-          const frame = frameData[0];
-          if (!frame) return;
+          if (!frameData || frameData.length === 0) return;
         
           const trueBearingDiana = bearing("diana", frame.gt_latitude, frame.gt_longitude);
           const trueBearingVenus = bearing("venus", frame.gt_latitude, frame.gt_longitude);
@@ -1249,7 +1248,7 @@
           createPlot(container, "VENUS Bearings", "venus_bearing", "true_bearing_venus", "venus_diff_abs");
           return container.node()
         }
-        </script>
+    </script>
         
         <script>
             // Final script – DOMContentLoaded + init call
@@ -1280,7 +1279,7 @@
                 updateAllVisualizations(selectedIndex);
               });
             });
-          </script>
+          </script>        
         
 </body>
 </html>
