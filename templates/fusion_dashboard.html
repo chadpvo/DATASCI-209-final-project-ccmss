@@ -1255,36 +1255,36 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const timeSlider = document.getElementById("timeSlider");
-            const droneData = {{ drone_data_json | safe }};
-            
+            const polarContainer = document.getElementById("polar-subplots-container");
+
             function updateAllVisualizations(index) {
-                updatePlots(index);  // Existing function for map/
-                
+                updatePlots(index); // your existing map/tables
+
                 const frame = [droneData[index]];
-                const polarContainer = document.getElementById("polar-subplots-container");
 
-                renderPolarSubplots(frame);  // Polar plots
-
-                if (polarContainer && typeof renderPolarSubplots === "function") {
-                const polarNode = renderPolarSubplots(frame);
-                if (polarNode) {
-                    polarContainer.innerHTML = "";
-                    polarContainer.appendChild(polarNode);
+                // Safely render polar plot
+                if (typeof renderPolarSubplots === "function" && polarContainer) {
+                    polarContainer.innerHTML = "";  // Clear previous plot
+                    const polarNode = renderPolarSubplots(frame);  // Make sure this returns a DOM node
+                    if (polarNode instanceof HTMLElement) {
+                        polarContainer.appendChild(polarNode);
+                    } else {
+                        console.warn("renderPolarSubplots did not return a valid element.");
+                    }
                 }
-            } else {
-                console.warn("Polar container or renderPolarSubplots not ready");
             }
-        }
 
+            // Slider interaction
             timeSlider.addEventListener("input", (event) => {
                 const selectedIndex = parseInt(event.target.value);
-                updateAllVisualizations(selectedIndex);
+                if (!isNaN(selectedIndex)) {
+                    updateAllVisualizations(selectedIndex);
+                }
             });
 
-            setTimeout(() => {
+            // Ensure it loads right away
             updateAllVisualizations(0);
-        }, 0);
-    }
+        });
     </script>
      
 </body>
