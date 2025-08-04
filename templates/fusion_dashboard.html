@@ -1126,18 +1126,24 @@
                     true_bearing_venus: trueBearingVenus,
                     diana_diff_abs: dianaDiff,
                     venus_diff_abs: venusDiff,
-                    time_radius: 200
+                    datetime: new Date(frame["datetime(utc)"])
                 };
                 });
 
-        
+            const minTime = d3.min(polarFrames, d => d.datetime);
+            polarFrames.forEach(d => {
+            d.time_radius = (d.datetime - minTime) / 1000;
+            });
+            polarFrames.sort((a, b) => d3.ascending(a.time_radius, b.time_radius));
+
           const width = 450;
           const height = 450;
           const margin = 50;
           const diffMax = 180;
         
-          const radius = d3.scaleLinear()
-            .domain([0, 800])
+            const rMax = d3.max(polarFrames, d => d.time_radius);
+            const radius = d3.scaleLinear()
+            .domain([0, rMax])
             .range([0, width / 2 - margin - 20]);
         
           const color = d3.scaleSequential()
@@ -1159,7 +1165,7 @@
               .attr("transform", `translate(${width / 2},${height / 2})`);
         
             // Bearing lines
-            const rOuter = radius(800);
+            const rOuter = radius(rMax);
             const angles = d3.range(0, 360, 30);
         
             g.selectAll("line.bearing")
