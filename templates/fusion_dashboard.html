@@ -1248,6 +1248,7 @@
           createPlot(container, "DIANA Bearings", "diana_bearing", "true_bearing_diana", "diana_diff_abs");
           createPlot(container, "VENUS Bearings", "venus_bearing", "true_bearing_venus", "venus_diff_abs");
         }
+        return container.node();
         </script>
         
         <script>
@@ -1256,18 +1257,14 @@
                 const polarContainer = document.getElementById("polar-subplots-container");
         
                 function updateAllVisualizations(index) {
-                    updatePlots(index);  // Existing function for map/tables
+                    updatePlots(index);  // Your map or plotly stuff
         
-                    // Get trailing slice of data
-                    const frames = droneData.slice(0, index + 1);
+                    const frames = droneData.slice(0, index + 1);  // Show trailing history
         
-                    // Render new polar plots
                     const polarNode = renderPolarSubplots(frames);
-        
-                    // Replace existing plot in container
-                    if (polarContainer) {
-                        polarContainer.innerHTML = "";  // Clear
-                        polarContainer.appendChild(polarNode);  // Re-append
+                    if (polarContainer && polarNode) {
+                        polarContainer.innerHTML = "";
+                        polarContainer.appendChild(polarNode);
                     }
                 }
         
@@ -1276,10 +1273,11 @@
                     updateAllVisualizations(selectedIndex);
                 });
         
-                // Initial load
+                // Initial render
                 updateAllVisualizations(0);
             });
         </script>
+        
         
 </body>
 </html>
