@@ -1073,7 +1073,7 @@
 
     <!-- Polar Subplots Function -->
     <script>
-        function renderPolarSubplots(frameData) {
+        function renderPolarSubplots(frameData, showDot = true) {
           const dianaLoc = [51.519137, 5.857951];
           const venusLoc = [51.5192716, 5.8579155];
         
@@ -1181,8 +1181,26 @@
               .attr("fill", "white")
               .text(d => `${d}s`);
         
-            // True bearing line (from center to outer)
+            if (showDot) {
+            // True bearing line
             g.append("line")
+                .attr("x1", 0)
+                .attr("y1", 0)
+                .attr("x2", polarToCartesian(polarFrame[trueKey], radius(polarFrame.time_radius))[0])
+                .attr("y2", polarToCartesian(polarFrame[trueKey], radius(polarFrame.time_radius))[1])
+                .attr("stroke", "white")
+                .attr("stroke-width", 1.5);
+
+            // Detected point
+            g.append("circle")
+                .attr("cx", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[0])
+                .attr("cy", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[1])
+                .attr("r", 3)
+                .attr("fill", color(polarFrame[diffKey]))
+                .attr("opacity", 0.95);
+            }
+            // True bearing line (from center to outer)
+            /*g.append("line")
               .attr("x1", 0)
               .attr("y1", 0)
               .attr("x2", polarToCartesian(polarFrame[trueKey], radius(polarFrame.time_radius))[0])
@@ -1190,14 +1208,7 @@
               .attr("stroke", "white")
               .attr("stroke-width", 1.5);
 
-              if (showDot) {
-            g.append("circle")
-                .attr("cx", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[0])
-                .attr("cy", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[1])
-                .attr("r", 3)
-                .attr("fill", color(polarFrame[diffKey]))
-                .attr("opacity", 0.95);
-                }
+              
         
             // Detected point
             g.append("circle")
@@ -1205,7 +1216,7 @@
               .attr("cy", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[1])
               .attr("r", 3)
               .attr("fill", color(polarFrame[diffKey]))
-              .attr("opacity", 0.95);
+              .attr("opacity", 0.95);*/
         
             // Title
             svg.append("text")
@@ -1271,16 +1282,29 @@
 
                 if (typeof renderPolarSubplots === "function" && polarContainer) {
                     const frame = [droneData[index]];
-                    const polarNode = renderPolarSubplots(frame, true);  // show dot on slider change
+                    const polarNode = renderPolarSubplots(frame, true);  // show dot
 
                     if (polarNode instanceof HTMLElement) {
-                        polarContainer.innerHTML = "";  // Clear previous plot
+                        polarContainer.innerHTML = "";
                         polarContainer.appendChild(polarNode);
                     } else {
                         console.warn("renderPolarSubplots did not return a valid element.");
                     }
                 } else {
                     console.warn("renderPolarSubplots not defined or polarContainer missing.");
+                }
+            }
+
+            // Initial load: just the outline, no dot
+            if (typeof renderPolarSubplots === "function" && polarContainer) {
+                const frame = [droneData[0]];
+                const polarNode = renderPolarSubplots(frame, false);  // don't show dot
+
+                if (polarNode instanceof HTMLElement) {
+                    polarContainer.innerHTML = "";
+                    polarContainer.appendChild(polarNode);
+                } else {
+                    console.warn("Initial renderPolarSubplots did not return a valid element.");
                 }
             }
 
@@ -1291,19 +1315,9 @@
                     updateAllVisualizations(selectedIndex);
                 }
             });
-
-            if (window.droneData && droneData.length > 0 && typeof renderPolarSubplots === "function") {
-                const staticNode = renderPolarSubplots([droneData[0]], false);  // preload with no dot
-                if (staticNode instanceof HTMLElement) {
-                    polarContainer.innerHTML = "";
-                    polarContainer.appendChild(staticNode);
-                }
-            }
-
-            // Initial full visualization (first frame with dot)
-            updateAllVisualizations(0);
         });
     </script>
+
 
      
 </body>
