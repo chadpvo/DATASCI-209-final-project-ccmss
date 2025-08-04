@@ -1095,7 +1095,7 @@
         
           if (!frameData || frameData.length === 0) return;
           
-          const frame = frameData[frameData.length - 1];      
+          /*const frame = frameData[frameData.length - 1];      
 
           const trueBearingDiana = bearing("diana", frame.gt_latitude, frame.gt_longitude);
           const trueBearingVenus = bearing("venus", frame.gt_latitude, frame.gt_longitude);
@@ -1111,7 +1111,25 @@
             diana_diff_abs: dianaDiff,
             venus_diff_abs: venusDiff,
             time_radius: 200
-          };
+          };*/
+
+          const polarFrames = frameData.map(frame => {
+                const trueBearingDiana = bearing("diana", frame.gt_latitude, frame.gt_longitude);
+                const trueBearingVenus = bearing("venus", frame.gt_latitude, frame.gt_longitude);
+                const dianaDiff = Math.abs(((frame.diana_bearing - trueBearingDiana + 180) % 360) - 180);
+                const venusDiff = Math.abs(((frame.venus_azimuth - trueBearingVenus + 180) % 360) - 180);
+                return {
+                    ...frame,
+                    diana_bearing: frame.diana_bearing,
+                    venus_bearing: frame.venus_azimuth,
+                    true_bearing_diana: trueBearingDiana,
+                    true_bearing_venus: trueBearingVenus,
+                    diana_diff_abs: dianaDiff,
+                    venus_diff_abs: venusDiff,
+                    time_radius: 200
+                };
+                });
+
         
           const width = 450;
           const height = 450;
@@ -1181,23 +1199,25 @@
               .attr("fill", "white")
               .text(d => `${d}s`);
         
-            if (showDot) {
-            // True bearing line
-            g.append("line")
+              if (showDot && polarFrames.length > 0) {
+                const lastFrame = polarFrames[polarFrames.length - 1];
+
+                g.append("line")
                 .attr("x1", 0)
                 .attr("y1", 0)
-                .attr("x2", polarToCartesian(polarFrame[trueKey], radius(polarFrame.time_radius))[0])
-                .attr("y2", polarToCartesian(polarFrame[trueKey], radius(polarFrame.time_radius))[1])
+                .attr("x2", polarToCartesian(lastFrame[trueKey], radius(lastFrame.time_radius))[0])
+                .attr("y2", polarToCartesian(lastFrame[trueKey], radius(lastFrame.time_radius))[1])
                 .attr("stroke", "white")
                 .attr("stroke-width", 1.5);
 
-            // Detected point
-            g.append("circle")
-                .attr("cx", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[0])
-                .attr("cy", polarToCartesian(polarFrame[bearingKey], radius(polarFrame.time_radius))[1])
-                .attr("r", 3)
-                .attr("fill", color(polarFrame[diffKey]))
-                .attr("opacity", 0.95);
+                polarFrames.forEach(pf => {
+                g.append("circle")
+                    .attr("cx", polarToCartesian(pf[bearingKey], radius(pf.time_radius))[0])
+                    .attr("cy", polarToCartesian(pf[bearingKey], radius(pf.time_radius))[1])
+                    .attr("r", 2)
+                    .attr("fill", color(pf[diffKey]))
+                    .attr("opacity", 0.8);
+                });
             }
             // True bearing line (from center to outer)
             /*g.append("line")
@@ -1281,8 +1301,8 @@
                 updatePlots(index); // your existing map/tables
 
                 if (typeof renderPolarSubplots === "function" && polarContainer) {
-                    const frame = [droneData[index]];
-                    const polarNode = renderPolarSubplots(frame, true);  // show dot
+                    const trailingFrames = droneData.slice(0, index + 1);
+                    const polarNode = renderPolarSubplots(trailingFrames, true);  // show dot
 
                     if (polarNode instanceof HTMLElement) {
                         polarContainer.innerHTML = "";
