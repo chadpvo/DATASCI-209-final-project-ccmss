@@ -1260,17 +1260,18 @@
             function updateAllVisualizations(index) {
                 updatePlots(index); // your existing map/tables
 
-                const frame = [droneData[index]];
-
-                // Safely render polar plot
                 if (typeof renderPolarSubplots === "function" && polarContainer) {
-                    polarContainer.innerHTML = "";  // Clear previous plot
-                    const polarNode = renderPolarSubplots(frame);  // Make sure this returns a DOM node
+                    const frame = [droneData[index]];
+                    const polarNode = renderPolarSubplots(frame);  // Only call once
+
                     if (polarNode instanceof HTMLElement) {
+                        polarContainer.innerHTML = "";  // Clear previous plot
                         polarContainer.appendChild(polarNode);
                     } else {
                         console.warn("renderPolarSubplots did not return a valid element.");
                     }
+                } else {
+                    console.warn("renderPolarSubplots not defined or polarContainer missing.");
                 }
             }
 
@@ -1282,10 +1283,11 @@
                 }
             });
 
-            // Ensure it loads right away
+            // Initial load
             updateAllVisualizations(0);
         });
     </script>
+
      
 </body>
 </html>
