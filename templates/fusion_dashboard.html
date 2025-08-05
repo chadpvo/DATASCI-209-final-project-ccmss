@@ -424,8 +424,6 @@
         </button>
     </div>
 
-    
-
     <div class="container" style="color: white; margin-top: 20px; margin-bottom: 30px;">
         <h2>Introduction</h2>
         <p>
@@ -538,15 +536,14 @@
                 <h3>🌐 ARCUS (3D Radar)</h3>
                 <div class="status" id="arcusStatus">Checking...</div>
             </div>
-
-            <!--<div class="sensor-card">
+            <div class="sensor-card">
                 <h3>📻 DIANA (RF-DF)</h3>
                 <div class="status" id="dianaStatus">Checking...</div>
             </div>
             <div class="sensor-card">
                 <h3>📡 VENUS (RF-DF)</h3>
                 <div class="status" id="venusStatus">Checking...</div>
-            </div> -->
+            </div>
         </div>
     </div>
 
@@ -625,7 +622,6 @@
     </div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
-
     <script>
         // Global variables
         let droneData = {{ drone_data_json | safe }};
@@ -1480,8 +1476,5 @@
             });
         });
     </script>
-
-
-     
 </body>
 </html>
