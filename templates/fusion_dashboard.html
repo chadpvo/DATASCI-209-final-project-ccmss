@@ -388,6 +388,14 @@
             border-radius: 10px;
             margin-bottom: 10px;
         }
+
+        .section-divider {
+            border: none;
+            border-top: 1px solid white;
+            margin: 40px 0; 
+            opacity: 0.4;   
+        }
+
         
         @media (max-width: 1200px) {
             .charts-grid {
@@ -425,10 +433,16 @@
         <p>
           As drones become more common—whether for recreation, commercial use, or more serious threats—detecting, tracking, and classifying them accurately has become essential for airspace safety. From civilian airports to military zones, the ability to identify drones quickly can prevent disruption or danger. To support NATO's efforts to protect against the misuse of drones, this dashboard explores how various sensors perform in real-world tracking scenarios. Switch between different flight scenarios to compare sensor performance across various conditions.
         </p>
+
+        <hr class="section-divider">
+
         <h2>The Data</h2>
         <p>
           The dataset includes timestamps, latitude and longitude (from radar sensors ALVIRA and ARCUS), and bearing, which represents the direction from the sensor to the signal source (as reported by RF sensors DIANA and VENUS). The data was provided by NATO as a set of comma-separated files, organized by drone and flight scenario. For better comparison, this analysis focuses on single-target tracking.
         </p>
+
+        <hr class="section-divider">
+
         <h2>Radar / RF Sensors</h2>
         <p>
           Meet our four sensors: <strong>ALVIRA</strong>, <strong>ARCUS</strong>, <strong>DIANA</strong>, and <strong>VENUS</strong>. Despite their human names, these sensors have highly technical, even superhuman, capabilities:
@@ -977,8 +991,9 @@
                         `;
                     }
                     
+                    
                     // DIANA metrics
-                    if (data.diana) {
+                    /*if (data.diana) {
                         const detectionClass = getMetricClass(data.diana.detection_rate, {good: 50, warning: 25});
                         const snrClass = data.diana.mean_snr > -70 ? 'metric-card' : 'metric-card warning';
                         metricsGrid.innerHTML += `
@@ -1006,7 +1021,7 @@
                                 <div class="metric-label">VENUS Avg Frequency</div>
                             </div>
                         `;
-                    }
+                    }*/
                     
                     // Overall system status
                     const totalSensors = Object.keys(data).length;
