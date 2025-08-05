@@ -25,7 +25,6 @@
             ),
             url("{{ url_for('static', filename=background_image) }}") no-repeat center center fixed;
             background-size: cover;
-            background-size: cover;
             background-color: #1a1a1a;
             color: #c3c2c2;
             min-height: 100vh;
@@ -44,7 +43,6 @@
             box-sizing: border-box;
             padding: 15px;
             margin-bottom: 20px;
-            box-sizing: border-box;
             position: relative;
         }
 
@@ -993,7 +991,7 @@
                     
                     
                     // DIANA metrics
-                    /*if (data.diana) {
+                    if (data.diana) {
                         const detectionClass = getMetricClass(data.diana.detection_rate, {good: 50, warning: 25});
                         const snrClass = data.diana.mean_snr > -70 ? 'metric-card' : 'metric-card warning';
                         metricsGrid.innerHTML += `
@@ -1021,7 +1019,7 @@
                                 <div class="metric-label">VENUS Avg Frequency</div>
                             </div>
                         `;
-                    }*/
+                    }
                     
                     // Overall system status
                     const totalSensors = Object.keys(data).length;
