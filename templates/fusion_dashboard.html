@@ -46,6 +46,15 @@
             position: relative;
         }
 
+        #polar-subplots-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-evenly;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+
         /* Scenario Selector Styles */
         .scenario-selector {
             background: #333;
@@ -1226,9 +1235,16 @@
             });
             polarFrames.sort((a, b) => d3.ascending(a.time_radius, b.time_radius));
 
-          const width = 450;
+          /*const width = 450;
           const height = 450;
-          const margin = 50;
+          const margin = 50;*/
+
+            const containerNode = document.getElementById("polar-subplots-container");
+            const containerWidth = containerNode.offsetWidth || 1200;
+            const margin = 50;
+            const width = containerWidth / 2 - margin * 2;
+            const height = width;
+
           const diffMax = 180;
         
             const rMax = d3.max(polarFrames, d => d.time_radius);
