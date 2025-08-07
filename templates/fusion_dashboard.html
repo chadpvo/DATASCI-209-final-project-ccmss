@@ -1253,7 +1253,7 @@
             .range([0, width / 2 - margin - 20]);
         
           const color = d3.scaleSequential()
-            .domain([diffMax, 0])
+            .domain([0, diffMax])
             .interpolator(d3.interpolateRdBu);
         
           function polarToCartesian(angleDeg, r) {
@@ -1314,13 +1314,20 @@
               if (showDot && polarFrames.length > 0) {
                 const lastFrame = polarFrames[polarFrames.length - 1];
 
-                g.append("line")
+                g.append("circle")
+                .attr("cx", polarToCartesian(lastFrame[trueKey], radius(lastFrame.time_radius))[0])
+                .attr("cy", polarToCartesian(lastFrame[trueKey], radius(lastFrame.time_radius))[1])
+                .attr("r", 4)
+                .attr("fill", "yellow")
+                .attr("opacity", 0.9);
+
+                /*g.append("line")
                 .attr("x1", 0)
                 .attr("y1", 0)
                 .attr("x2", polarToCartesian(lastFrame[trueKey], radius(lastFrame.time_radius))[0])
                 .attr("y2", polarToCartesian(lastFrame[trueKey], radius(lastFrame.time_radius))[1])
                 .attr("stroke", "white")
-                .attr("stroke-width", 1.5);
+                .attr("stroke-width", 1.5);*/
 
                 polarFrames.forEach(pf => {
                 g.append("circle")
