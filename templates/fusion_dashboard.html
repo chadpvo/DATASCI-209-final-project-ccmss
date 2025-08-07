@@ -1310,16 +1310,28 @@
               .attr("font-size", "10px")
               .attr("fill", "white")
               .text(d => `${d}s`);
+
+            g.selectAll("circle.true")
+            .data(polarFrames)
+            .join("circle")
+            .attr("cx", d => polarToCartesian(d[trueKey], radius(d.time_radius))[0])
+            .attr("cy", d => polarToCartesian(d[trueKey], radius(d.time_radius))[1])
+            .attr("r", 2)
+            .attr("fill", "yellow")
+            .attr("opacity", 0.5);
         
               if (showDot && polarFrames.length > 0) {
+
                 const lastFrame = polarFrames[polarFrames.length - 1];
 
                 g.append("circle")
                 .attr("cx", polarToCartesian(lastFrame[trueKey], radius(lastFrame.time_radius))[0])
                 .attr("cy", polarToCartesian(lastFrame[trueKey], radius(lastFrame.time_radius))[1])
-                .attr("r", 4)
+                .attr("r", 5)
                 .attr("fill", "yellow")
-                .attr("opacity", 0.9);
+                .attr("stroke", "black")
+                .attr("stroke-width", 0.7)
+                .attr("opacity", 1);
 
                 /*g.append("line")
                 .attr("x1", 0)
@@ -1412,7 +1424,7 @@
                 .data(d3.ticks(0, 1, 20))
                 .join("stop")
                 .attr("offset", d => `${d * 100}%`)
-                .attr("stop-color", d => d3.interpolateRdBu(1 - d));
+                .attr("stop-color", d => d3.interpolateRdBu(d));
 
                 // Color bar + axis
                 const colorLegendGroup = svg
