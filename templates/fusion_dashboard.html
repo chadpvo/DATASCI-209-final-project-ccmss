@@ -1382,19 +1382,21 @@
             const legend = svg.append("g")
               .attr("transform", `translate(${width / 2 - 120}, ${height + 20})`);
         
-            legend.append("line")
-              .attr("x1", 0)
-              .attr("y1", 0)
-              .attr("x2", 15)
-              .attr("y2", 0)
-              .attr("stroke", "white")
-              .attr("stroke-width", 2);
-            legend.append("text")
-              .attr("x", 20)
-              .attr("y", 5)
-              .attr("fill", "white")
-              .attr("font-size", "12px")
-              .text("True Bearing");
+              legend.append("circle")
+                .attr("cx", 7)
+                .attr("cy", 0)
+                .attr("r", 5)
+                .attr("fill", "yellow")
+                .attr("stroke", "black")
+                .attr("stroke-width", 0.7);
+
+                legend.append("text")
+                .attr("x", 20)
+                .attr("y", 5)
+                .attr("fill", "white")
+                .attr("font-size", "12px")
+                .text("Ground Truth");
+
         
             legend.append("circle")
               .attr("cx", 120)
